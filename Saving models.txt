@@ -1,0 +1,10 @@
+Saving Classifiers/Regression Models
+	https://youtu.be/za5s7RB_VLw
+	#saves the model after training
+	# clf = LinearRegression(n_jobs=-1) #as many threads as possible
+	# clf.fit(X_train,y_train)
+	# with open('linearregression.pickle','wb') as f:
+	#     pickle.dump(clf, f)
+	
+Keras/Neural Network Models
+	https://www.tensorflow.org/tutorials/keras/save_and_load
