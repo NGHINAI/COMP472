@@ -5,6 +5,11 @@ Saving Classifiers/Regression Models
 	# clf.fit(X_train,y_train)
 	# with open('linearregression.pickle','wb') as f:
 	#     pickle.dump(clf, f)
-	
+
+>>> from joblib import dump, load
+>>> dump(clf, 'filename.joblib') 
+	https://scikit-learn.org/stable/model_persistence.html
+https://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
+
 Keras/Neural Network Models
 	https://www.tensorflow.org/tutorials/keras/save_and_load
