@@ -130,3 +130,5 @@ dmypy.json
 
 .idea/
 .DS_Store
+
+Mini Project 1/models/word2vec.pickle
