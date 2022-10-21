@@ -132,3 +132,7 @@ dmypy.json
 .DS_Store
 
 Mini Project 1/models/word2vec.pickle
+
+Mini Project 1/models/twitter.pickle
+
+Mini Project 1/models/wiki.pickle
