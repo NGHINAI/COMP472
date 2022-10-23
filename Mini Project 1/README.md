@@ -1,4 +1,7 @@
 <h1>COMP 472 - Artificial Intelligence Mini-Project 1</h1>
+
+<h2> https://github.com/JeffreyCHChan/COMP472 </h2>
+
 <h3>Completed by:</h3>
 
 <h5></h5> 
