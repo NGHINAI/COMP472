@@ -30,5 +30,8 @@ Create the following folders </body>
 
 <body>
 Ensure all Multi-Layer Perceptron that you wish to skip has the skip boolean to False. Once complete then you may run the entire notebook.
+
+Note: Some users may encounter errors while the line: print(f"The number of unique words is {len(X.toarray()[0])} unique words") tries to run. This can be commented 
+out as it does not affect the rest of the project.
 </body>
 
