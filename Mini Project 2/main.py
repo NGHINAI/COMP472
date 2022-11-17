@@ -106,6 +106,14 @@ def h3( h3array ):
 
 # def moveCar(car, direction, distance, currentarray): # How do we want to take gas into account
 
-
+def heuristic(currentArray):
+    headOfAmbulance = 0
+    blockingCars = array.shape[1]-2
+    for i in range(0, array.shape[1]):
+        if (currentArray[2][i], [i] == 'A'):
+            headOfAmbulance += 1
+        if (headOfAmbulance == 2 and array[2][i] in carsingame):
+            blockingCars += 1
+    return blockingCars
 
 

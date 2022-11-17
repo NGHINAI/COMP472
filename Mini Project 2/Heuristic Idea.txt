@@ -27,5 +27,5 @@ for i in range(0,array.shape[1]):
 		headOfAmbulance+=1
 	else:
 		continue
-	if (headOfAmbulance==2 and array[2][i] in carsingame)):
-		ambulanceToExit+=1
+	if (headOfAmbulance==2 and array[2][i] in carsingame):
+		blockingCars+=1
