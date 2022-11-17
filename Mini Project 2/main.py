@@ -68,6 +68,44 @@ def isGameDone( currArray ):
     else:
         return False
 
-def moveCar(car, direction, distance, currentarray): # How do we want to take gas into account
+def h1( h1array ):
+    # List keeping track of all the cars blocking the ambulance
+    carsinfront = []
+    ambulancerow = h1array[2]
+    # Position of the ambulance
+    ampos = np.argwhere(ambulancerow == 'A')
+    # Position of the ambulance that is closest to the exit
+    closesttoexit = ampos[carsizes['A']-1][0]
+    # Iterate through all of the positions in front of the ambulance and see if a car is blocking it or not, no repeat values
+    for x in range(closesttoexit+1, 6):
+        if ambulancerow[x] != '.' and ambulancerow[x] not in carsinfront:
+            carsinfront.append(array[2][x])
+    # Return the number of cars in front of the ambulance
+    return len(carsinfront)
+
+def h2( h2array ):
+    # List keeping track of all the blocked positions
+    blockedpositions = []
+    ambulancerow = h2array[2]
+    # Position of the ambulance
+    ampos = np.argwhere(ambulancerow == 'A')
+    # Position of the ambulance that is closest to the exit
+    closesttoexit = ampos[carsizes['A']-1][0]
+    # Iterate through all the positions in front of the ambulance and see if it is occupied or not.
+    for x in range(closesttoexit+1, 6):
+        if array[2][x] != '.':
+            blockedpositions.append(array[2][x])
+    # Return the number of blocked positions in front of the ambulance.
+    return len(blockedpositions)
+
+def h3( h3array ):
+    theta = 3
+    # Return the value of h1 multiplied by a constant factor.
+    return theta*h1(h3array)
+
+
+# def moveCar(car, direction, distance, currentarray): # How do we want to take gas into account
+
+
 
 
