@@ -205,12 +205,57 @@ def movecar ( gamestate, movedetails ):
         bottommostcar = carplacement[len(carplacement)-1]
         temparr[upmostcar[0], upmostcar[1]] = '.'
         temparr[bottommostcar[0]+1, bottommostcar[1]] = movedetails[0]
-    print(temparr)
+    #print(temparr)
     return temparr
 
 
+def uniformCostSearch ( array , gasarray):
+    costcount = 0
+    openList_gamestate = []
+    openList_cost = []
+    openList_moves = []
+    openList_gas = []
+    closeList_gamestate = []
+    closeList_gas = []
+    closeList_moves = []
+    #heuristicList = []
+    movesList = []
 
 
+    closeList_gamestate.append(array)
+    closeList_gas.append(gasarray)
+    closeList_moves.append([0])
 
 
+    for move in possmoves(array, gasarray):
+        potentialState = movecar(array, move)
+        for state in range(len(openList_gamestate)):
+            if (np.array_equal(potentialState, openList_gamestate[state])):
+                #check cost
+                if (costcount+1) < openList_cost[state]:
+                    newcost = costcount+1
+                    for i in range(len(openList_cost)):
+                        if i == newcost:
+                            tempcost = openList_cost[0:i].append(newcost) + openList_cost[i:]
+                            tempgamestate = openList_gamestate[0:i].append(openList_gamestate[state]) + openList_gamestate[i:]
+                            tempgas = openList_gas[0:i].append(openList_gas[state]) + openList_gas[i:]
+                            tempmoves = openList_moves[0:i].append(openList_moves[state]) + openList_moves[i:]
+                            tempcost.pop(state+1)
+                            tempgamestate.pop(state+1)
+                            tempgas.pop(state + 1)
+                            tempmoves.pop(state + 1)
+                            openList_cost = tempcost
+                            openList_moves = tempmoves
+                            openList_gas = tempgas
+                            openList_gamestate = tempgamestate
+
+            else:
+                movesList.append(move)
+
+
+    print(movesList)
+
+#print(array)
+print("possible moves:")
+uniformCostSearch( array, cargas )
 
