@@ -12,10 +12,8 @@ gascount = 0  # Used to count which gas value we are currently reading
 carsingame = []  # Used to keep track of all the car names that are in the game
 cargas = {}  # Dictionary containing all the gas values for cars with restricted car values.
 horver = {}  # Dictionary which tracks if the car can move horizontally or vertically.
-carsizes = {} # Dictionary containing the size of all cards.
-carrows = {} # Idk if we would want these  but might be easy to make a list for each row and column detailing which cars can move in
-            # that direction so that we just search for . and then we know how to move it.
-carcols = {}
+carsizes = {}  # Dictionary containing the size of all cards.
+
 
 # Read through every line, we split each line into words based on empty space.
 for line in lines:
@@ -45,6 +43,14 @@ for line in lines:
             cargas[currcarletter] = currcargas
             gascount = gascount+1
 
+for car in carsingame:
+    stringtochararray = list(car)
+    test = stringtochararray
+    if car not in cargas.keys():
+        cargas[car] = 100
+
+print(cargas)
+
 # Go through all the cars in the game and create a dictionary which tracks which way it can move.
 for car in carsingame:
     currarr = np.argwhere(array == car)
@@ -62,8 +68,8 @@ for car in carsingame:
 
 
 # Checks if the game is done based on if the ambulance is in its final position.
-def isGameDone( currArray ):
-    if currArray[2][5] == 'A' and currArray[2][4] == 'A':
+def isgamedone( currarray ):
+    if currarray[2][5] == 'A' and currarray[2][4] == 'A':
         return True
     else:
         return False
@@ -123,5 +129,22 @@ def h4(currentArray):
                 carsAround.append(currentArray[row][col])
     carsAround = set(carsAround)
     return len(carsAround)
+
+
+def canValet(valarr):
+    ambulancerow = valarr[2]
+    if ambulancerow[5] == ambulancerow[4]:
+        return True
+    else:
+        return False
+
+
+def removeValet(valremove):
+    removeVal = valremove[2][5]
+    ambulancerow = valremove[2]
+    for x in range(0, 6):
+        if ambulancerow[x] == removeVal:
+            ambulancerow[x] = '.'
+
 
 
