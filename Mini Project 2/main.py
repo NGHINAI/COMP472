@@ -229,28 +229,44 @@ def uniformCostSearch ( array , gasarray):
 
     for move in possmoves(array, gasarray):
         potentialState = movecar(array, move)
-        for state in range(len(openList_gamestate)):
+        notInClosedState = False
+        #checking if the prospective state is in the closed state and if it is not then check conditions for open state
+        for state in range(len(closeList_gamestate)):
             if (np.array_equal(potentialState, openList_gamestate[state])):
-                #check cost
-                if (costcount+1) < openList_cost[state]:
-                    newcost = costcount+1
-                    for i in range(len(openList_cost)):
-                        if i == newcost:
-                            tempcost = openList_cost[0:i].append(newcost) + openList_cost[i:]
-                            tempgamestate = openList_gamestate[0:i].append(openList_gamestate[state]) + openList_gamestate[i:]
-                            tempgas = openList_gas[0:i].append(openList_gas[state]) + openList_gas[i:]
-                            tempmoves = openList_moves[0:i].append(openList_moves[state]) + openList_moves[i:]
-                            tempcost.pop(state+1)
-                            tempgamestate.pop(state+1)
-                            tempgas.pop(state + 1)
-                            tempmoves.pop(state + 1)
-                            openList_cost = tempcost
-                            openList_moves = tempmoves
-                            openList_gas = tempgas
-                            openList_gamestate = tempgamestate
+                notInClosedState = True
+        if(not(notInClosedState)):
+            for state in range(len(openList_gamestate)):
+                #handles if the state to be added to the open list exists already
+                if (np.array_equal(potentialState, openList_gamestate[state])):
+                    #if new state has a lower cost then replace the old state and order accordingly
+                    if (costcount+1) < openList_cost[state]:
+                        newcost = costcount+1
+                        for i in range(len(openList_cost)):
+                            if i == newcost:
+                                #moves the new values into ascending order by cost
+                                tempcost = openList_cost[0:i].append(newcost) + openList_cost[i:]
+                                tempgamestate = openList_gamestate[0:i].append(openList_gamestate[state]) + openList_gamestate[i:]
+                                tempgas = openList_gas[0:i].append(openList_gas[state]) + openList_gas[i:]
+                                tempmoves = openList_moves[0:i].append(openList_moves[state]) + openList_moves[i:]
+                                #removes the old information
+                                tempcost.pop(state+1)
+                                tempgamestate.pop(state+1)
+                                tempgas.pop(state + 1)
+                                tempmoves.pop(state + 1)
+                                #reassigns the lists to the reordered lists
+                                openList_cost = tempcost
+                                openList_moves = tempmoves
+                                openList_gas = tempgas
+                                openList_gamestate = tempgamestate
 
-            else:
-                movesList.append(move)
+                else:
+                    movesList.append(move) #should we change this to openList_moveList.append?
+                    openList_gamestate.append(potentialState)
+                    openList_cost.append(costcount+1)
+                    openList_gas.append(gasarray) #needs to be handled
+
+
+
 
 
     print(movesList)
