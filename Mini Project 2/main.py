@@ -107,13 +107,21 @@ def h3( h3array ):
 # def moveCar(car, direction, distance, currentarray): # How do we want to take gas into account
 
 def h4(currentArray):
-    headOfAmbulance = 0
-    blockingCars = array.shape[1]-2
-    for i in range(0, array.shape[1]):
-        if (currentArray[2][i], [i] == 'A'):
-            headOfAmbulance += 1
-        if (headOfAmbulance == 2 and array[2][i] in carsingame):
-            blockingCars += 1
-    return blockingCars
+    #number of cars around the ambulance
+    #if we want to ignore parallel cars check if horver.get(currentArray[row][col+1] == "v")
+    carsAround = []
+    #row above
+    for row in range(1,4):
+        for col in range(0, array.shape[1]):
+            if (currentArray[row][col+1] == 'A'and horver.get(currentArray[row][col+1] == "v")): #column after is A
+                carsAround.append(currentArray[row][col])
+            if (currentArray[row][col-1] == 'A' and horver.get(currentArray[row][col-1] == "v")): #column before is A
+                carsAround.append(currentArray[row][col])
+            if (currentArray[row+1][col] == 'A'and horver.get(currentArray[row+1][col] == "v")): #row below is A
+                carsAround.append(currentArray[row][col])
+            if (currentArray[row-1][col] == 'A' and horver.get(currentArray[row-1][col] == "v")): #row above is A
+                carsAround.append(currentArray[row][col])
+    carsAround = set(carsAround)
+    return len(carsAround)
 
 
