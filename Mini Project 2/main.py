@@ -147,4 +147,70 @@ def removeValet(valremove):
             ambulancerow[x] = '.'
 
 
+def possmoves ( statearray, gasarray ):
+    emptyspots = np.argwhere(statearray == ".")
+    possmoves = []
+    for spot in emptyspots:
+        horizontalrow = statearray[spot[0]]
+        if(spot[1]<5):
+            spottoright = horizontalrow[spot[1]+1]
+            if(spottoright != "." and horver[spottoright] == "h"):
+                if(gasarray[spottoright]>1):
+                    possmoves.append([spottoright, "L", 1])
+        if(spot[1]>0):
+            spottoleft = horizontalrow[spot[1]-1]
+            if(spottoleft != '.' and horver[spottoleft] == "h"):
+                if(gasarray[spottoleft]>1):
+                    possmoves.append([spottoleft, "R", 1])
+
+        verticalcol = statearray[:, spot[1]]
+        if(spot[0]<5):
+            spotbelow = verticalcol[spot[0]+1]
+            if(spotbelow != "." and horver[spotbelow] == "v"):
+                if(gasarray[spotbelow]>1):
+                    possmoves.append(([spotbelow, "U", 1]))
+        if(spot[0]>0):
+            spotabove = verticalcol[spot[0]-1]
+            if(spotabove != "." and horver[spotabove] == "v"):
+                if(gasarray[spotabove]>1):
+                    possmoves.append(([spotabove, "D", 1]))
+
+    print(possmoves)
+    return possmoves
+
+def movecar ( gamestate, movedetails ):
+    temparr = gamestate
+    if (movedetails[1]=="L"):
+        carplacement = np.argwhere(gamestate == movedetails[0])
+        leftmostcar = carplacement[0]
+        rightmostcar = carplacement[len(carplacement)-1]
+        temparr[leftmostcar[0], leftmostcar[1]-1] = movedetails[0]
+        temparr[rightmostcar[0], rightmostcar[1]] = '.'
+    elif (movedetails[1] == "R"):
+        carplacement = np.argwhere(gamestate == movedetails[0])
+        leftmostcar = carplacement[0]
+        rightmostcar = carplacement[len(carplacement)-1]
+        temparr[leftmostcar[0], leftmostcar[1]] = '.'
+        temparr[rightmostcar[0], rightmostcar[1]-1] = movedetails[0]
+
+    elif (movedetails[1] == "U"):
+        carplacement = np.argwhere(gamestate == movedetails[0])
+        upmostcar = carplacement[0]
+        bottommostcar = carplacement[len(carplacement)-1]
+        temparr[upmostcar[0]-1, upmostcar[1]] = movedetails[0]
+        temparr[bottommostcar[0], bottommostcar[1]] = '.'
+    elif (movedetails[1] == "D"):
+        carplacement = np.argwhere(gamestate == movedetails[0])
+        upmostcar = carplacement[0]
+        bottommostcar = carplacement[len(carplacement)-1]
+        temparr[upmostcar[0], upmostcar[1]] = '.'
+        temparr[bottommostcar[0]+1, bottommostcar[1]] = movedetails[0]
+    print(temparr)
+    return temparr
+
+
+
+
+
+
 
