@@ -1,4 +1,3 @@
-
 import numpy as np
 
 # Open the input file to get values
@@ -6,14 +5,13 @@ with open('inputfile.txt') as f:
     lines = f.readlines()
 
 # Initialization of variables to track data
-array = np.empty((6,6), dtype=object)  # Array that holds the car positions
+array = np.empty((6, 6), dtype=object)  # Array that holds the car positions
 arrcount = 0  # Used to place the car value at the correct index
 gascount = 0  # Used to count which gas value we are currently reading
 carsingame = []  # Used to keep track of all the car names that are in the game
 cargas = {}  # Dictionary containing all the gas values for cars with restricted car values.
 horver = {}  # Dictionary which tracks if the car can move horizontally or vertically.
 carsizes = {}  # Dictionary containing the size of all cards.
-
 
 # Read through every line, we split each line into words based on empty space.
 for line in lines:
@@ -23,12 +21,12 @@ for line in lines:
         if line.strip():
             # Move every character in the word into a 6 x 6 array.
             for char in word[0]:
-                row = int(arrcount/6) % 6
+                row = int(arrcount / 6) % 6
                 col = arrcount % 6
                 # Add car name values that have not been added yet to carsingame.
                 if char not in carsingame and char != '.' and char != '\n':
                     carsingame.append(char)
-                arrcount = arrcount+1
+                arrcount = arrcount + 1
                 array[row, col] = char
 
         gascount = 0
@@ -41,7 +39,7 @@ for line in lines:
             currcarletter = word[gascount][0]
             currcargas = int(word[gascount][1])
             cargas[currcarletter] = currcargas
-            gascount = gascount+1
+            gascount = gascount + 1
 
 for car in carsingame:
     stringtochararray = list(car)
@@ -64,68 +62,73 @@ for car in carsingame:
 # Create dictionary with size of all cars.
 for car in carsingame:
     currarr = np.argwhere(array == car)
-    carsizes[car] = int(np.prod(currarr.shape)/2)
+    carsizes[car] = int(np.prod(currarr.shape) / 2)
 
 
 # Checks if the game is done based on if the ambulance is in its final position.
-def isgamedone( currarray ):
+def isgamedone(currarray):
     if currarray[2][5] == 'A' and currarray[2][4] == 'A':
         return True
     else:
         return False
 
-def h1( h1array ):
+
+def h1(h1array):
     # List keeping track of all the cars blocking the ambulance
     carsinfront = []
     ambulancerow = h1array[2]
     # Position of the ambulance
     ampos = np.argwhere(ambulancerow == 'A')
     # Position of the ambulance that is closest to the exit
-    closesttoexit = ampos[carsizes['A']-1][0]
+    closesttoexit = ampos[carsizes['A'] - 1][0]
     # Iterate through all of the positions in front of the ambulance and see if a car is blocking it or not, no repeat values
-    for x in range(closesttoexit+1, 6):
+    for x in range(closesttoexit + 1, 6):
         if ambulancerow[x] != '.' and ambulancerow[x] not in carsinfront:
             carsinfront.append(array[2][x])
     # Return the number of cars in front of the ambulance
     return len(carsinfront)
 
-def h2( h2array ):
+
+def h2(h2array):
     # List keeping track of all the blocked positions
     blockedpositions = []
     ambulancerow = h2array[2]
     # Position of the ambulance
     ampos = np.argwhere(ambulancerow == 'A')
     # Position of the ambulance that is closest to the exit
-    closesttoexit = ampos[carsizes['A']-1][0]
+    closesttoexit = ampos[carsizes['A'] - 1][0]
     # Iterate through all the positions in front of the ambulance and see if it is occupied or not.
-    for x in range(closesttoexit+1, 6):
+    for x in range(closesttoexit + 1, 6):
         if array[2][x] != '.':
             blockedpositions.append(array[2][x])
     # Return the number of blocked positions in front of the ambulance.
     return len(blockedpositions)
 
-def h3( h3array ):
+
+def h3(h3array):
     theta = 3
     # Return the value of h1 multiplied by a constant factor.
-    return theta*h1(h3array)
+    return theta * h1(h3array)
 
 
 # def moveCar(car, direction, distance, currentarray): # How do we want to take gas into account
 
 def h4(currentArray):
-    #number of cars around the ambulance
-    #if we want to ignore parallel cars check if horver.get(currentArray[row][col+1] == "v")
+    # number of cars around the ambulance
+    # if we want to ignore parallel cars check if horver.get(currentArray[row][col+1] == "v")
     carsAround = []
-    #row above
-    for row in range(1,4):
+    # row above
+    for row in range(1, 4):
         for col in range(0, array.shape[1]):
-            if (currentArray[row][col+1] == 'A'and horver.get(currentArray[row][col+1] == "v")): #column after is A
+            if (currentArray[row][col + 1] == 'A' and horver.get(
+                    currentArray[row][col + 1] == "v")):  # column after is A
                 carsAround.append(currentArray[row][col])
-            if (currentArray[row][col-1] == 'A' and horver.get(currentArray[row][col-1] == "v")): #column before is A
+            if (currentArray[row][col - 1] == 'A' and horver.get(
+                    currentArray[row][col - 1] == "v")):  # column before is A
                 carsAround.append(currentArray[row][col])
-            if (currentArray[row+1][col] == 'A'and horver.get(currentArray[row+1][col] == "v")): #row below is A
+            if (currentArray[row + 1][col] == 'A' and horver.get(currentArray[row + 1][col] == "v")):  # row below is A
                 carsAround.append(currentArray[row][col])
-            if (currentArray[row-1][col] == 'A' and horver.get(currentArray[row-1][col] == "v")): #row above is A
+            if (currentArray[row - 1][col] == 'A' and horver.get(currentArray[row - 1][col] == "v")):  # row above is A
                 carsAround.append(currentArray[row][col])
     carsAround = set(carsAround)
     return len(carsAround)
@@ -147,69 +150,70 @@ def removeValet(valremove):
             ambulancerow[x] = '.'
 
 
-def possmoves ( statearray, gasarray ):
+def possmoves(statearray, gasarray):
     emptyspots = np.argwhere(statearray == ".")
     possmoves = []
     for spot in emptyspots:
         horizontalrow = statearray[spot[0]]
-        if(spot[1]<5):
-            spottoright = horizontalrow[spot[1]+1]
-            if(spottoright != "." and horver[spottoright] == "h"):
-                if(gasarray[spottoright]>1):
+        if (spot[1] < 5):
+            spottoright = horizontalrow[spot[1] + 1]
+            if (spottoright != "." and horver[spottoright] == "h"):
+                if (gasarray[spottoright] > 1):
                     possmoves.append([spottoright, "L", 1])
-        if(spot[1]>0):
-            spottoleft = horizontalrow[spot[1]-1]
-            if(spottoleft != '.' and horver[spottoleft] == "h"):
-                if(gasarray[spottoleft]>1):
+        if (spot[1] > 0):
+            spottoleft = horizontalrow[spot[1] - 1]
+            if (spottoleft != '.' and horver[spottoleft] == "h"):
+                if (gasarray[spottoleft] > 1):
                     possmoves.append([spottoleft, "R", 1])
 
         verticalcol = statearray[:, spot[1]]
-        if(spot[0]<5):
-            spotbelow = verticalcol[spot[0]+1]
-            if(spotbelow != "." and horver[spotbelow] == "v"):
-                if(gasarray[spotbelow]>1):
+        if (spot[0] < 5):
+            spotbelow = verticalcol[spot[0] + 1]
+            if (spotbelow != "." and horver[spotbelow] == "v"):
+                if (gasarray[spotbelow] > 1):
                     possmoves.append(([spotbelow, "U", 1]))
-        if(spot[0]>0):
-            spotabove = verticalcol[spot[0]-1]
-            if(spotabove != "." and horver[spotabove] == "v"):
-                if(gasarray[spotabove]>1):
+        if (spot[0] > 0):
+            spotabove = verticalcol[spot[0] - 1]
+            if (spotabove != "." and horver[spotabove] == "v"):
+                if (gasarray[spotabove] > 1):
                     possmoves.append(([spotabove, "D", 1]))
 
     print(possmoves)
     return possmoves
 
-def movecar ( gamestate, movedetails ):
+
+def movecar(gamestate, movedetails):
     temparr = gamestate
-    if (movedetails[1]=="L"):
+    if (movedetails[1] == "L"):
         carplacement = np.argwhere(gamestate == movedetails[0])
         leftmostcar = carplacement[0]
-        rightmostcar = carplacement[len(carplacement)-1]
-        temparr[leftmostcar[0], leftmostcar[1]-1] = movedetails[0]
+        rightmostcar = carplacement[len(carplacement) - 1]
+        temparr[leftmostcar[0], leftmostcar[1] - 1] = movedetails[0]
         temparr[rightmostcar[0], rightmostcar[1]] = '.'
     elif (movedetails[1] == "R"):
         carplacement = np.argwhere(gamestate == movedetails[0])
         leftmostcar = carplacement[0]
-        rightmostcar = carplacement[len(carplacement)-1]
+        rightmostcar = carplacement[len(carplacement) - 1]
         temparr[leftmostcar[0], leftmostcar[1]] = '.'
-        temparr[rightmostcar[0], rightmostcar[1]-1] = movedetails[0]
+        temparr[rightmostcar[0], rightmostcar[1] - 1] = movedetails[0]
 
     elif (movedetails[1] == "U"):
         carplacement = np.argwhere(gamestate == movedetails[0])
         upmostcar = carplacement[0]
-        bottommostcar = carplacement[len(carplacement)-1]
-        temparr[upmostcar[0]-1, upmostcar[1]] = movedetails[0]
+        bottommostcar = carplacement[len(carplacement) - 1]
+        temparr[upmostcar[0] - 1, upmostcar[1]] = movedetails[0]
         temparr[bottommostcar[0], bottommostcar[1]] = '.'
     elif (movedetails[1] == "D"):
         carplacement = np.argwhere(gamestate == movedetails[0])
         upmostcar = carplacement[0]
-        bottommostcar = carplacement[len(carplacement)-1]
+        bottommostcar = carplacement[len(carplacement) - 1]
         temparr[upmostcar[0], upmostcar[1]] = '.'
-        temparr[bottommostcar[0]+1, bottommostcar[1]] = movedetails[0]
-    #print(temparr)
+        temparr[bottommostcar[0] + 1, bottommostcar[1]] = movedetails[0]
+    # print(temparr)
     return temparr
 
 
-def uniformCostSearch ( array , gasarray):
+def uniformCostSearch(array, gasarray):
     costcount = 0
     openList_gamestate = []
     openList_cost = []
@@ -218,61 +222,61 @@ def uniformCostSearch ( array , gasarray):
     closeList_gamestate = []
     closeList_gas = []
     closeList_moves = []
-    #heuristicList = []
+    # heuristicList = []
     movesList = []
-
 
     closeList_gamestate.append(array)
     closeList_gas.append(gasarray)
     closeList_moves.append([0])
 
-
-    while(not(isgamedone(array))):
+    while (not (isgamedone(array))):
         for move in possmoves(array, gasarray):
             potentialState = movecar(array, move)
             notInClosedState = False
-            #checking if the prospective state is in the closed state and if it is not then check conditions for open state
+            # checking if the prospective state is in the closed state
+            # and if it is not then check conditions for open state
             for state in range(len(closeList_gamestate)):
-                if (np.array_equal(potentialState, openList_gamestate[state])):
+                if np.array_equal(potentialState, openList_gamestate[state]):
                     notInClosedState = True
-            if(not(notInClosedState)):
+            if not notInClosedState:
                 for state in range(len(openList_gamestate)):
-                    #handles if the state to be added to the open list exists already
-                    if (np.array_equal(potentialState, openList_gamestate[state])):
-                        #if new state has a lower cost then replace the old state and order accordingly
-                        if (costcount+1) < openList_cost[state]:
-                            newcost = costcount+1
+                    # handles if the state to be added to the open list exists already
+                    if np.array_equal(potentialState, openList_gamestate[state]):
+                        # if new state has a lower cost then replace the old state and order accordingly
+                        if (costcount + 1) < openList_cost[state]:
+                            newcost = costcount + 1
                             for i in range(len(openList_cost)):
                                 if i == newcost:
-                                    #moves the new values into ascending order by cost
+                                    # moves the new values into ascending order by cost
                                     tempcost = openList_cost[0:i].append(newcost) + openList_cost[i:]
-                                    tempgamestate = openList_gamestate[0:i].append(openList_gamestate[state]) + openList_gamestate[i:]
+                                    tempgamestate = openList_gamestate[0:i].append(
+                                        openList_gamestate[state]) + openList_gamestate[i:]
                                     tempgas = openList_gas[0:i].append(openList_gas[state]) + openList_gas[i:]
                                     tempmoves = openList_moves[0:i].append(openList_moves[state]) + openList_moves[i:]
-                                    #removes the old information
-                                    tempcost.pop(state+1)
-                                    tempgamestate.pop(state+1)
+                                    # removes the old information
+                                    tempcost.pop(state + 1)
+                                    tempgamestate.pop(state + 1)
                                     tempgas.pop(state + 1)
                                     tempmoves.pop(state + 1)
-                                    #reassigns the lists to the reordered lists
+                                    # reassigns the lists to the reordered lists
                                     openList_cost = tempcost
                                     openList_moves = tempmoves
                                     openList_gas = tempgas
                                     openList_gamestate = tempgamestate
 
                     else:
-                        movesList.append(move) #should we change this to openList_moveList.append?
+                        movesList.append(move)  # should we change this to openList_moveList.append?
                         openList_gamestate.append(potentialState)
-                        openList_cost.append(costcount+1)
-                        openList_gas.append(gasarray) #needs to be handled
-        #now makes a move
-        #take openlist game states
+                        openList_cost.append(costcount + 1)
+                        openList_gas.append(gasarray)  # needs to be handled
+        # now makes a move
+        # take openlist game states
         # make a move
         # update and append respective variables
         # new state copy into "array" variable
-    print(movesList) #if car moves consuctively then count once
+    print(movesList)  # if car moves consecutively then count once
 
-#print(array)
+
+# print(array)
 print("possible moves:")
-uniformCostSearch( array, cargas )
-
+uniformCostSearch(array, cargas)
