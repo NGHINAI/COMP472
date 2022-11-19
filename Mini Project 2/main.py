@@ -218,15 +218,13 @@ def uniformCostSearch(array, gasarray):
     openList_gamestate = []
     openList_cost = []
     openList_moves = []
-    openList_gas = []
     closeList_gamestate = []
-    closeList_gas = []
+    gasDict = gasarray
+    movesList = []
     closeList_moves = []
     # heuristicList = []
-    movesList = []
 
     closeList_gamestate.append(array)
-    closeList_gas.append(gasarray)
     closeList_moves.append([0])
 
     while (not (isgamedone(array))):
@@ -251,30 +249,33 @@ def uniformCostSearch(array, gasarray):
                                     tempcost = openList_cost[0:i].append(newcost) + openList_cost[i:]
                                     tempgamestate = openList_gamestate[0:i].append(
                                         openList_gamestate[state]) + openList_gamestate[i:]
-                                    tempgas = openList_gas[0:i].append(openList_gas[state]) + openList_gas[i:]
                                     tempmoves = openList_moves[0:i].append(openList_moves[state]) + openList_moves[i:]
                                     # removes the old information
                                     tempcost.pop(state + 1)
                                     tempgamestate.pop(state + 1)
-                                    tempgas.pop(state + 1)
                                     tempmoves.pop(state + 1)
                                     # reassigns the lists to the reordered lists
                                     openList_cost = tempcost
                                     openList_moves = tempmoves
-                                    openList_gas = tempgas
                                     openList_gamestate = tempgamestate
 
                     else:
-                        movesList.append(move)  # should we change this to openList_moveList.append?
+                        openList_moves.append(move)
                         openList_gamestate.append(potentialState)
                         openList_cost.append(costcount + 1)
-                        openList_gas.append(gasarray)  # needs to be handled
+
         # now makes a move
+        storedmove, storedgamestate, storedcost = openList_moves.pop(0), openList_gamestate.pop(0), openList_cost.pop(0)
+        array = movecar(array, storedmove)
+        closeList_gamestate.append(storedgamestate)
+        closeList_moves.append(storedmove)
+        costcount = costcount + 1
+        gasDict[storedmove[0]] = gasDict.get(storedmove[0]) - 1
         # take openlist game states
         # make a move
         # update and append respective variables
         # new state copy into "array" variable
-    print(movesList)  # if car moves consecutively then count once
+    print(openList_moves)  # if car moves consecutively then count once
 
 
 # print(array)
