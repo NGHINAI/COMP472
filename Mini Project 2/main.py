@@ -230,6 +230,18 @@ def uniformCostSearch(array, gasarray):
     openList_cost.append(9999)
 
     while (not (isgamedone(array))):
+
+        # 1 we append the moves that are generated as an array them self into the openList_moves
+        # [
+        # [[B,R,1],[A,R,1],...] state 0
+        # [[D,R,1],[A,L,1],...] state 1
+        # ]
+        # we need to handle the possible moves in respect to the state we are in when we "make a move"
+
+        # 2 do for each state loop then inside do the for move loop might fix it
+
+        # 3 or we have to add one more inner for loop
+        # moves to generate the possible states, states to check if it exists and can be added then another inner loop
         for move in possmoves(array, gasarray):
             print(f"\nstate: \n{array} \n Next move: {move}")
             potentialState = movecar(array, move)
@@ -246,8 +258,8 @@ def uniformCostSearch(array, gasarray):
                         # if new state has a lower cost then replace the old state and order accordingly
                         if (costcount + 1) < openList_cost[state]:
                             newcost = costcount + 1
-                            for i in range(len(openList_cost)):
-                                if i == newcost:
+                            for i in range(len(openList_cost)): #never enters
+                                if i == newcost-1:
                                     # moves the new values into ascending order by cost
                                     tempcost = openList_cost[0:i].append(newcost) + openList_cost[i:]
                                     tempgamestate = openList_gamestate[0:i].append(
@@ -268,6 +280,15 @@ def uniformCostSearch(array, gasarray):
                         openList_cost.append(costcount + 1)
 
         # now makes a move
+
+        # handle the possible moves in respect to the state they belong to when we "make a move"
+        # we should probably check which state we are observing and retrieve that index, so we can use the proper
+        # possible moves in openList_moves
+
+        # we also need to fix the openList_cost since it seems it is not adding any values
+        # added -1 to line 262 so that it would enter the "if" block I think we need to initialize the cost list with
+        # all move cost of the initial state and put them just like the possible openList_moves array
+
         storedmove = openList_moves[0][0]
         storedgamestate = openList_gamestate[0][0]
         storedcost = openList_cost[0]
