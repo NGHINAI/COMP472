@@ -4,6 +4,14 @@ import numpy as np
 with open('inputfile.txt') as f:
     lines = f.readlines()
 
+t1 = [['B' 'B' 'B' '.' '.' 'M'], ['C' 'C' 'D' 'D' '.' 'M'], ['A' 'A' 'K' 'L' 'E' 'M'], ['J' '.' 'K' 'L' 'E' '.'], ['J' '.' 'G' 'G' '.' '.'], ['J' 'H' 'H' 'H' 'I' 'I']]
+t2 = [['B' 'B' 'B' '.' '.' 'M'], ['C' 'C' 'D' 'D' '.' 'M'], ['A' 'A' 'K' 'L' 'E' 'M'], ['J' '.' 'K' 'L' 'E' '.'], ['J' '.' 'G' 'G' '.' '.'], ['J' 'H' 'H' 'H' 'I' 'I']]
+
+h1 = hash(t1)
+h1a = hash(t1)
+h2 = hash(t2)
+
+print(f"{h1}\n{h1a}\n{h2}")
 # Initialization of variables to track data
 array = np.empty((6, 6), dtype=object)  # Array that holds the car positions
 arrcount = 0  # Used to place the car value at the correct index
@@ -230,6 +238,18 @@ def uniformCostSearch(array, gasarray):
     openList_cost.append(9999)
 
     while (not (isgamedone(array))):
+
+        # 1 we append the moves that are generated as an array them self into the openList_moves
+        # [
+        # [[B,R,1],[A,R,1],...] state 0
+        # [[D,R,1],[A,L,1],...] state 1
+        # ]
+        # we need to handle the possible moves in respect to the state we are in when we "make a move"
+
+        # 2 do for each state loop then inside do the for move loop might fix it
+
+        # 3 or we have to add one more inner for loop
+        # moves to generate the possible states, states to check if it exists and can be added then another inner loop
         for move in possmoves(array, gasarray):
             print(f"\nstate: \n{array} \n Next move: {move}")
             potentialState = movecar(array, move)
@@ -268,6 +288,11 @@ def uniformCostSearch(array, gasarray):
                         openList_cost.append(costcount + 1)
 
         # now makes a move
+
+        # handle the possible moves in respect to the state they belong to when we "make a move"
+        # we should probably check which state we are observing and retrieve that index, so we can use the proper
+        # possible moves in openList_moves
+
         storedmove = openList_moves[0][0]
         storedgamestate = openList_gamestate[0][0]
         storedcost = openList_cost[0]
