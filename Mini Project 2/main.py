@@ -4,6 +4,14 @@ import numpy as np
 with open('inputfile.txt') as f:
     lines = f.readlines()
 
+t1 = [['B' 'B' 'B' '.' '.' 'M'], ['C' 'C' 'D' 'D' '.' 'M'], ['A' 'A' 'K' 'L' 'E' 'M'], ['J' '.' 'K' 'L' 'E' '.'], ['J' '.' 'G' 'G' '.' '.'], ['J' 'H' 'H' 'H' 'I' 'I']]
+t2 = [['B' 'B' 'B' '.' '.' 'M'], ['C' 'C' 'D' 'D' '.' 'M'], ['A' 'A' 'K' 'L' 'E' 'M'], ['J' '.' 'K' 'L' 'E' '.'], ['J' '.' 'G' 'G' '.' '.'], ['J' 'H' 'H' 'H' 'I' 'I']]
+
+h1 = hash(t1)
+h1a = hash(t1)
+h2 = hash(t2)
+
+print(f"{h1}\n{h1a}\n{h2}")
 # Initialization of variables to track data
 array = np.empty((6, 6), dtype=object)  # Array that holds the car positions
 arrcount = 0  # Used to place the car value at the correct index
