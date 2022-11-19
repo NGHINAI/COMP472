@@ -47,7 +47,7 @@ for car in carsingame:
     if car not in cargas.keys():
         cargas[car] = 100
 
-print(cargas)
+# print(cargas)
 
 # Go through all the cars in the game and create a dictionary which tracks which way it can move.
 for car in carsingame:
@@ -178,12 +178,13 @@ def possmoves(statearray, gasarray):
                 if (gasarray[spotabove] > 1):
                     possmoves.append(([spotabove, "D", 1]))
 
-    print(possmoves)
+    # print(possmoves)
     return possmoves
 
 
 def movecar(gamestate, movedetails):
     temparr = gamestate
+    # print(f"game state: \n{temparr} \n with {movedetails}")
     if (movedetails[1] == "L"):
         carplacement = np.argwhere(gamestate == movedetails[0])
         leftmostcar = carplacement[0]
@@ -195,7 +196,7 @@ def movecar(gamestate, movedetails):
         leftmostcar = carplacement[0]
         rightmostcar = carplacement[len(carplacement) - 1]
         temparr[leftmostcar[0], leftmostcar[1]] = '.'
-        temparr[rightmostcar[0], rightmostcar[1] - 1] = movedetails[0]
+        temparr[rightmostcar[0], rightmostcar[1] + 1] = movedetails[0]
 
     elif (movedetails[1] == "U"):
         carplacement = np.argwhere(gamestate == movedetails[0])
@@ -224,17 +225,19 @@ def uniformCostSearch(array, gasarray):
     closeList_moves = []
     # heuristicList = []
 
-    closeList_gamestate.append(array)
-    closeList_moves.append([0])
+    openList_gamestate.append(array)
+    openList_moves.append(possmoves(array, gasDict))
+    openList_cost.append(9999)
 
     while (not (isgamedone(array))):
         for move in possmoves(array, gasarray):
+            print(f"\nstate: \n{array} \n Next move: {move}")
             potentialState = movecar(array, move)
             notInClosedState = False
             # checking if the prospective state is in the closed state
             # and if it is not then check conditions for open state
             for state in range(len(closeList_gamestate)):
-                if np.array_equal(potentialState, openList_gamestate[state]):
+                if np.array_equal(potentialState, closeList_gamestate[state]):
                     notInClosedState = True
             if not notInClosedState:
                 for state in range(len(openList_gamestate)):
@@ -261,21 +264,33 @@ def uniformCostSearch(array, gasarray):
 
                     else:
                         openList_moves.append(move)
-                        openList_gamestate.append(potentialState)
+                        np.append(openList_gamestate, potentialState)
                         openList_cost.append(costcount + 1)
 
         # now makes a move
-        storedmove, storedgamestate, storedcost = openList_moves.pop(0), openList_gamestate.pop(0), openList_cost.pop(0)
+        storedmove = openList_moves[0][0]
+        storedgamestate = openList_gamestate[0][0]
+        storedcost = openList_cost[0]
+
+        openList_moves =  openList_moves[0][1:]
+        openList_gamestate = openList_gamestate[0][1:]
+        openList_cost = openList_cost[1:]
+
         array = movecar(array, storedmove)
         closeList_gamestate.append(storedgamestate)
         closeList_moves.append(storedmove)
         costcount = costcount + 1
-        gasDict[storedmove[0]] = gasDict.get(storedmove[0]) - 1
+        # print(storedmove[0][0])
+        # print(gasDict["B"])
+        gasDict[storedmove[0][0]] = gasDict.get(storedmove[0][0]) - 1
         # take openlist game states
         # make a move
         # update and append respective variables
         # new state copy into "array" variable
-    print(openList_moves)  # if car moves consecutively then count once
+
+        # print(f"current state: \n{array}")
+        # print(f"move done: {storedmove}")
+    # print(array)  # if car moves consecutively then count once
 
 
 # print(array)
