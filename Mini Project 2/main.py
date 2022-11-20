@@ -239,7 +239,7 @@ def uniformCostSearch(array, gasarray):
         # we need to handle the possible moves in respect to the state we are in when we "make a move"
 
         for move in possmoves(array, gasarray):
-            print(f"\nstate: \n{array} \n Next move: {move}")
+            print(f"\nstate: \n{array} \n Potential move: {move}")
             potentialState = movecar(array, move)
             notInClosedState = False
             # checking if the prospective state is in the closed state
@@ -286,6 +286,8 @@ def uniformCostSearch(array, gasarray):
         # print(storedmove[0][0])
         # print(gasDict["B"])
         gasDict[storedmove[0][0]] = gasDict.get(storedmove[0][0]) - 1
+
+        print(f"closed moves: {closeList_moves}")
         # take openlist game states
         # make a move
         # update and append respective variables
@@ -297,5 +299,7 @@ def uniformCostSearch(array, gasarray):
 
 
 # print(array)
-print("possible moves:")
+# be sure to have a break poiunt on the following break point
+
+print(f"______________________________\nhard line: {possmoves(array, cargas)}\n______________________________\n\n\n")
 uniformCostSearch(array, cargas)
