@@ -183,7 +183,7 @@ def possmoves(statearray, gasarray):
 
 
 def movecar(gamestate, movedetails):
-    temparr = gamestate
+    temparr = copy.deepcopy(gamestate)
     # print(f"game state: \n{temparr} \n with {movedetails}")
     if (movedetails[1] == "L"):
         carplacement = np.argwhere(gamestate == movedetails[0])
@@ -218,7 +218,7 @@ def uniformCostSearch(array, gasarray):
     costcount = 0
     openList_gamestate = []
     openList_cost = []
-    openList_moves = []
+    openList_moves = [[]]
     closeList_gamestate = []
     gasDict = gasarray
     movesList = []
@@ -226,7 +226,8 @@ def uniformCostSearch(array, gasarray):
     # heuristicList = []
 
     openList_gamestate.append(array)
-    openList_moves.append(possmoves(array, gasDict))
+    #openList_moves.append([])
+    #openList_moves.append(possmoves(array, gasDict))
     openList_cost.append(9999)
 
     # potential fix is changing the array initialization on line 8 to a hard coded list
@@ -272,11 +273,11 @@ def uniformCostSearch(array, gasarray):
                             newcost = costcount + 1
                             openList_cost[stateIndex] = newcost
 
-                    else:
-                        openList_moves.append(move)
-                        openList_gamestate.append(movecar(parentArray, move))
-                        openList_cost.append(costcount+1)
-                        print("")
+                else:
+                    openList_moves[len(openList_moves)-1].append(move)
+                    openList_gamestate.append(movecar(parentArray, move))
+                    openList_cost.append(costcount+1)
+                    print("")
 
 
         # now makes a move
