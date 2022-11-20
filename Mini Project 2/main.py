@@ -1,5 +1,5 @@
 import numpy as np
-
+import copy
 # Open the input file to get values
 with open('inputfile.txt') as f:
     lines = f.readlines()
@@ -229,6 +229,13 @@ def uniformCostSearch(array, gasarray):
     # openList_moves.append(possmoves(array, gasDict))
     # openList_cost.append(9999)
 
+    # potential fix is changing the array initialization on line 8 to a hard coded list
+    # since move() uses np arrays we can not just use toList()
+
+    # deep copy of the original array
+    deepArray = copy.deepcopy(array)
+    # another deep copy of the original array
+    parentArray = copy.deepcopy(array)
     while (not (isgamedone(array))):
 
         # 1 we append the moves that are generated as an array them self into the openList_moves
@@ -246,7 +253,9 @@ def uniformCostSearch(array, gasarray):
             # it is finding potential states for the previous potentialState
 
             # movecar() changes value in openList_gamestates unintentionally
-            potentialState = movecar(array, move)
+
+            # possible moves need to be done on the parent array
+            potentialState = movecar(parentArray, move)
             notInClosedState = False
             # checking if the prospective state is in the closed state
             # and if it is not then check conditions for open state
@@ -277,15 +286,19 @@ def uniformCostSearch(array, gasarray):
 
         # we just grab the index of the first lowest using min(listName) then just change values using the index
 
-        storedmove = openList_moves[0][0]
-        storedgamestate = openList_gamestate[0][0]
+        
+
+        storedmove = openList_moves[0]
+        storedgamestate = openList_gamestate[0]
         storedcost = openList_cost[0]
 
-        openList_moves =  openList_moves[0][1:]
-        openList_gamestate = openList_gamestate[0][1:]
-        openList_cost = openList_cost[1:]
+        # openList_moves =  openList_moves[0][1:]
+        # openList_gamestate = openList_gamestate[0][1:]
+        # openList_cost = openList_cost[1:]
 
-        array = movecar(array, storedmove)
+        #added
+        parentArray = deepArray
+        array = movecar(parentArray, storedmove)
         closeList_gamestate.append(storedgamestate)
         closeList_moves.append(storedmove)
         costcount = costcount + 1
