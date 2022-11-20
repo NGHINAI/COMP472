@@ -238,9 +238,15 @@ def uniformCostSearch(array, gasarray):
         # ]
         # we need to handle the possible moves in respect to the state we are in when we "make a move"
 
+
         for move in possmoves(array, gasarray):
             print(f"\nstate: \n{array} \n Potential move: {move}")
-            potentialState = movecar(array, move)
+            # Problem on next line
+            # what is happening is instead of finding potential states for the original array
+            # it is finding potential states for the previous potentialState
+
+            # movecar() changes value in openList_gamestates unintentionally
+            potentialState = movecar(originalArray, move)
             notInClosedState = False
             # checking if the prospective state is in the closed state
             # and if it is not then check conditions for open state
