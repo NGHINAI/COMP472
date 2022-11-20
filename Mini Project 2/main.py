@@ -245,7 +245,6 @@ def uniformCostSearch(array, gasarray):
             # checking if the prospective state is in the closed state
             # and if it is not then check conditions for open state
 
-
             for state in range(len(closeList_gamestate)):
                 if np.array_equal(potentialState, closeList_gamestate[state]):
                     notInClosedState = True
@@ -257,9 +256,6 @@ def uniformCostSearch(array, gasarray):
                             newcost = costcount + 1
                             openList_cost[state] = newcost
 
-                    # we also need to fix the openList_cost since it seems it is not adding any values
-                    # added -1 to line 262 so that it would enter the "if" block I think we need to initialize the cost list with
-                    # all move cost of the initial state and put them just like the possible openList_moves array
                     else:
                         openList_moves.append(move)
                         openList_gamestate.append(potentialState)
@@ -272,10 +268,9 @@ def uniformCostSearch(array, gasarray):
         # possible moves in openList_moves
 
         # we also need to fix the openList_cost since it seems it is not adding any values
-        # added -1 to line 262 so that it would enter the "if" block I think we need to initialize the cost list with
-        # all move cost of the initial state and put them just like the possible openList_moves array
 
-        #we just grab the index of the first lowest using min(listName)
+        # we just grab the index of the first lowest using min(listName) then just change values using the index
+
         storedmove = openList_moves[0][0]
         storedgamestate = openList_gamestate[0][0]
         storedcost = openList_cost[0]
