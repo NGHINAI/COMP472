@@ -238,16 +238,14 @@ def uniformCostSearch(array, gasarray):
         # ]
         # we need to handle the possible moves in respect to the state we are in when we "make a move"
 
-        # 2 do for each state loop then inside do the for move loop might fix it
-
-        # 3 or we have to add one more inner for loop
-        # moves to generate the possible states, states to check if it exists and can be added then another inner loop
         for move in possmoves(array, gasarray):
             print(f"\nstate: \n{array} \n Next move: {move}")
             potentialState = movecar(array, move)
             notInClosedState = False
             # checking if the prospective state is in the closed state
             # and if it is not then check conditions for open state
+
+
             for state in range(len(closeList_gamestate)):
                 if np.array_equal(potentialState, closeList_gamestate[state]):
                     notInClosedState = True
@@ -255,29 +253,17 @@ def uniformCostSearch(array, gasarray):
                 for state in range(len(openList_gamestate)):
                     # handles if the state to be added to the open list exists already
                     if np.array_equal(potentialState, openList_gamestate[state]):
-                        # if new state has a lower cost then replace the old state and order accordingly
-                        if (costcount + 1) < openList_cost[state]:
+                        if((costcount + 1) < openList_cost[state]):
                             newcost = costcount + 1
-                            for i in range(len(openList_cost)): #never enters
-                                if i == newcost-1:
-                                    # moves the new values into ascending order by cost
-                                    tempcost = openList_cost[0:i].append(newcost) + openList_cost[i:]
-                                    tempgamestate = openList_gamestate[0:i].append(
-                                        openList_gamestate[state]) + openList_gamestate[i:]
-                                    tempmoves = openList_moves[0:i].append(openList_moves[state]) + openList_moves[i:]
-                                    # removes the old information
-                                    tempcost.pop(state + 1)
-                                    tempgamestate.pop(state + 1)
-                                    tempmoves.pop(state + 1)
-                                    # reassigns the lists to the reordered lists
-                                    openList_cost = tempcost
-                                    openList_moves = tempmoves
-                                    openList_gamestate = tempgamestate
+                            openList_cost[state] = newcost
 
+                    # we also need to fix the openList_cost since it seems it is not adding any values
+                    # added -1 to line 262 so that it would enter the "if" block I think we need to initialize the cost list with
+                    # all move cost of the initial state and put them just like the possible openList_moves array
                     else:
                         openList_moves.append(move)
-                        np.append(openList_gamestate, potentialState)
-                        openList_cost.append(costcount + 1)
+                        openList_gamestate.append(potentialState)
+                        openList_cost.append(costcount+1)
 
         # now makes a move
 
@@ -289,6 +275,7 @@ def uniformCostSearch(array, gasarray):
         # added -1 to line 262 so that it would enter the "if" block I think we need to initialize the cost list with
         # all move cost of the initial state and put them just like the possible openList_moves array
 
+        #we just grab the index of the first lowest using min(listName)
         storedmove = openList_moves[0][0]
         storedgamestate = openList_gamestate[0][0]
         storedcost = openList_cost[0]
