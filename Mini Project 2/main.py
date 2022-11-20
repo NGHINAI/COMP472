@@ -225,9 +225,9 @@ def uniformCostSearch(array, gasarray):
     closeList_moves = []
     # heuristicList = []
 
-    # openList_gamestate.append(array)
-    # openList_moves.append(possmoves(array, gasDict))
-    # openList_cost.append(9999)
+    openList_gamestate.append(array)
+    openList_moves.append(possmoves(array, gasDict))
+    openList_cost.append(9999)
 
     # potential fix is changing the array initialization on line 8 to a hard coded list
     # since move() uses np arrays we can not just use toList()
@@ -260,22 +260,23 @@ def uniformCostSearch(array, gasarray):
             # checking if the prospective state is in the closed state
             # and if it is not then check conditions for open state
 
-            for state in range(len(closeList_gamestate)):
-                if np.array_equal(potentialState, closeList_gamestate[state]):
+            for stateIndex in range(len(closeList_gamestate)):
+                if np.array_equal(potentialState, closeList_gamestate[stateIndex]):
                     notInClosedState = True
-            if not notInClosedState:
-                for state in range(len(openList_gamestate)):
-                    # handles if the state to be added to the open list exists already
-                    if np.array_equal(potentialState, openList_gamestate[state]):
-                        if((costcount + 1) < openList_cost[state]):
-                            newcost = costcount + 1
-                            openList_cost[state] = newcost
 
-                else:
-                    openList_moves.append(move)
-                    openList_gamestate.append(potentialState)
-                    openList_cost.append(costcount+1)
-                    print("")
+            if not notInClosedState:
+                for stateIndex in range(len(openList_gamestate)):
+                    # handles if the state to be added to the open list exists already
+                    if np.array_equal(potentialState, openList_gamestate[stateIndex]):
+                        if((costcount + 1) < openList_cost[stateIndex]):
+                            newcost = costcount + 1
+                            openList_cost[stateIndex] = newcost
+
+                    else:
+                        openList_moves.append(move)
+                        openList_gamestate.append(movecar(parentArray, move))
+                        openList_cost.append(costcount+1)
+                        print("")
 
 
         # now makes a move
@@ -286,7 +287,8 @@ def uniformCostSearch(array, gasarray):
 
         # we just grab the index of the first lowest using min(listName) then just change values using the index
 
-        
+        # 1 more layer of array needs to be done and should be accessible by index
+        # openList_moves[0] should become openList_moves[0][i] or similar
 
         storedmove = openList_moves[0]
         storedgamestate = openList_gamestate[0]
@@ -296,10 +298,12 @@ def uniformCostSearch(array, gasarray):
         # openList_gamestate = openList_gamestate[0][1:]
         # openList_cost = openList_cost[1:]
 
-        #added
+        #added to ensure moves are done on the parent node correctly
+
         parentArray = deepArray
         array = movecar(parentArray, storedmove)
         closeList_gamestate.append(storedgamestate)
+        openList_gamestate.remove()
         closeList_moves.append(storedmove)
         costcount = costcount + 1
         # print(storedmove[0][0])
