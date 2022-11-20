@@ -228,7 +228,7 @@ def uniformCostSearch(array, gasarray):
     openList_gamestate.append(array)
     #openList_moves.append([])
     #openList_moves.append(possmoves(array, gasDict))
-    openList_cost.append(9999)
+    # openList_cost.append(9999)
 
     # potential fix is changing the array initialization on line 8 to a hard coded list
     # since move() uses np arrays we can not just use toList()
@@ -304,9 +304,11 @@ def uniformCostSearch(array, gasarray):
         parentArray = deepArray
         array = movecar(parentArray, storedmove)
         closeList_gamestate.append(storedgamestate)
-        openList_gamestate.remove()
         closeList_moves.append(storedmove)
         costcount = costcount + 1
+
+        openList_moves.append([])
+
         # print(storedmove[0][0])
         # print(gasDict["B"])
         gasDict[storedmove[0][0]] = gasDict.get(storedmove[0][0]) - 1
