@@ -225,9 +225,9 @@ def uniformCostSearch(array, gasarray):
     closeList_moves = []
     # heuristicList = []
 
-    openList_gamestate.append(array)
-    openList_moves.append(possmoves(array, gasDict))
-    openList_cost.append(9999)
+    # openList_gamestate.append(array)
+    # openList_moves.append(possmoves(array, gasDict))
+    # openList_cost.append(9999)
 
     while (not (isgamedone(array))):
 
@@ -246,7 +246,7 @@ def uniformCostSearch(array, gasarray):
             # it is finding potential states for the previous potentialState
 
             # movecar() changes value in openList_gamestates unintentionally
-            potentialState = movecar(originalArray, move)
+            potentialState = movecar(array, move)
             notInClosedState = False
             # checking if the prospective state is in the closed state
             # and if it is not then check conditions for open state
@@ -262,18 +262,18 @@ def uniformCostSearch(array, gasarray):
                             newcost = costcount + 1
                             openList_cost[state] = newcost
 
-                    else:
-                        openList_moves.append(move)
-                        openList_gamestate.append(potentialState)
-                        openList_cost.append(costcount+1)
+                else:
+                    openList_moves.append(move)
+                    openList_gamestate.append(potentialState)
+                    openList_cost.append(costcount+1)
+                    print("")
+
 
         # now makes a move
 
         # handle the possible moves in respect to the state they belong to when we "make a move"
         # we should probably check which state we are observing and retrieve that index, so we can use the proper
         # possible moves in openList_moves
-
-        # we also need to fix the openList_cost since it seems it is not adding any values
 
         # we just grab the index of the first lowest using min(listName) then just change values using the index
 
