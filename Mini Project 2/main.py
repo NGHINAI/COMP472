@@ -218,6 +218,8 @@ def uniformCostSearch(array, gasarray):
     costcount = 0
     openList_gamestate = []
     openList_cost = []
+    closeList_previousstate = []
+    openList_previousstate = []
     openList_moves = [[]]
     closeList_gamestate = []
     gasDict = gasarray
@@ -225,7 +227,8 @@ def uniformCostSearch(array, gasarray):
     closeList_moves = []
     # heuristicList = []
 
-    openList_gamestate.append(array)
+    closeList_gamestate.append(array)
+    closeList_previousstate.append([])
     #openList_moves.append([])
     #openList_moves.append(possmoves(array, gasDict))
     # openList_cost.append(9999)
@@ -233,12 +236,11 @@ def uniformCostSearch(array, gasarray):
     # potential fix is changing the array initialization on line 8 to a hard coded list
     # since move() uses np arrays we can not just use toList()
 
-    # deep copy of the original array
-    deepArray = copy.deepcopy(array)
-    # another deep copy of the original array
-    parentArray = copy.deepcopy(array)
     while (not (isgamedone(array))):
-
+        # deep copy of the original array
+        deepArray = copy.deepcopy(array)
+        # another deep copy of the original array
+        parentArray = copy.deepcopy(array)
         # 1 we append the moves that are generated as an array them self into the openList_moves
         # [
         # [[B,R,1],[A,R,1],...] state 0
@@ -276,7 +278,11 @@ def uniformCostSearch(array, gasarray):
                 else:
                     openList_moves[len(openList_moves)-1].append(move)
                     openList_gamestate.append(movecar(parentArray, move))
-                    openList_cost.append(costcount+1)
+                    openList_previousstate.append(parentArray)
+                    if len(closeList_moves) > 0 and closeList_moves[len(closeList_moves) - 1] != move:
+                        openList_cost.append(costcount+1)
+                    else:
+                        openList_cost.append(costcount)
                     print("")
 
 
@@ -291,9 +297,6 @@ def uniformCostSearch(array, gasarray):
         # 1 more layer of array needs to be done and should be accessible by index
         # openList_moves[0] should become openList_moves[0][i] or similar
 
-        storedmove = openList_moves[0]
-        storedgamestate = openList_gamestate[0]
-        storedcost = openList_cost[0]
 
         # openList_moves =  openList_moves[0][1:]
         # openList_gamestate = openList_gamestate[0][1:]
@@ -301,11 +304,29 @@ def uniformCostSearch(array, gasarray):
 
         #added to ensure moves are done on the parent node correctly
 
+
+        mincost = min(openList_cost)
+        #minarr = np.argwhere(openList_cost <= mincost)
+        movetocloseindex = openList_cost.index(mincost)
+        testarr = [['a'], ['b'], ['c']]
+        testprevi = testarr.index(['a'])
+        previousmovecloseindex = closeList_gamestate.index(openList_previousstate[movetocloseindex])
+        storedmove = openList_moves[previousmovecloseindex][movetocloseindex]
+        storedgamestate = openList_gamestate[movetocloseindex]
+        storedcost = openList_cost[movetocloseindex]
+
         parentArray = deepArray
-        array = movecar(parentArray, storedmove)
+        array = storedgamestate
         closeList_gamestate.append(storedgamestate)
+        closeList_previousstate.append(parentArray)
+
         closeList_moves.append(storedmove)
         costcount = costcount + 1
+        openList_gamestate.remove(storedgamestate)
+        openList_moves[previousmovecloseindex].remove(storedmove)
+        openList_cost.remove(storedcost)
+
+        #VALET
 
         openList_moves.append([])
 
