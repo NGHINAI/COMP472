@@ -308,9 +308,12 @@ def uniformCostSearch(array, gasarray):
         mincost = min(openList_cost)
         #minarr = np.argwhere(openList_cost <= mincost)
         movetocloseindex = openList_cost.index(mincost)
-        testarr = [['a'], ['b'], ['c']]
-        testprevi = testarr.index(['a'])
-        previousmovecloseindex = closeList_gamestate.index(openList_previousstate[movetocloseindex])
+        prevstatearray = openList_previousstate[movetocloseindex]
+        previousmovecloseindex = 0
+        for i in range(len(closeList_gamestate)):
+            forlooptest=closeList_gamestate[i]
+            if(np.array_equiv(forlooptest,prevstatearray)):
+                previousmovecloseindex = i
         storedmove = openList_moves[previousmovecloseindex][movetocloseindex]
         storedgamestate = openList_gamestate[movetocloseindex]
         storedcost = openList_cost[movetocloseindex]
@@ -335,6 +338,8 @@ def uniformCostSearch(array, gasarray):
         gasDict[storedmove[0][0]] = gasDict.get(storedmove[0][0]) - 1
 
         print(f"closed moves: {closeList_moves}")
+
+    endofgamevals = 0
         # take openlist game states
         # make a move
         # update and append respective variables
