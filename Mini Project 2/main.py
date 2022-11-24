@@ -218,7 +218,7 @@ def uniformCostSearch(array, gasarray):
     costcount = 0
     openList_gamestate = []
     openList_cost = []
-    closeList_previousstate = []
+    closeList_previousstate = [] #previous state to keep track of parent states in order to keep track what paths have been visited
     openList_previousstate = []
     openList_moves = [[]]
     closeList_gamestate = []
@@ -305,9 +305,9 @@ def uniformCostSearch(array, gasarray):
         #added to ensure moves are done on the parent node correctly
 
 
-        mincost = min(openList_cost)
+        mincost = min(openList_cost) #finds the minimum cost move
         #minarr = np.argwhere(openList_cost <= mincost)
-        movetocloseindex = openList_cost.index(mincost)
+        movetocloseindex = openList_cost.index(mincost) #mincost is used to find the openlist index
         prevstatearray = openList_previousstate[movetocloseindex]
         previousmovecloseindex = 0
         for i in range(len(closeList_gamestate)):
