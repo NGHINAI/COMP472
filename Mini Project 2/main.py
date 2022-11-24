@@ -27,7 +27,8 @@ for line in lines:
                 if char not in carsingame and char != '.' and char != '\n':
                     carsingame.append(char)
                 arrcount = arrcount + 1
-                array[row, col] = char
+                if(arrcount<=36):
+                    array[row, col] = char
 
         gascount = 0
         # Take all the words after the first as that is where the gas values begin.

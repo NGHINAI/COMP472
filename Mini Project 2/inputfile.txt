@@ -1,9 +1,4 @@
-#
-# Demo 1
-
 # demo 1.1
-#BBIJ....IJCC..IAAMGDDK.MGH.KL.GHFFL.
-
 Z.BOOOZ.B....AAC...D.C...DPPPE.....E
 
 # demo 1.2
