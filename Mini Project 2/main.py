@@ -304,6 +304,7 @@ def uniformCostSearch(array, gasarray):
 
         #added to ensure moves are done on the parent node correctly
 
+        #TODO: ADD AN IF STATEMENT FOR WHEN TRYING TO MOVE A CAR WITH NO GAS
 
         mincost = min(openList_cost) #finds the minimum cost move
         #minarr = np.argwhere(openList_cost <= mincost)
@@ -330,12 +331,21 @@ def uniformCostSearch(array, gasarray):
         openList_cost.remove(storedcost)
 
         #VALET
+        if canValet(array):
+            removeCar = removeValet(array)
+            carVal = array[2][5]
+            closeList_gamestate = removeCar
+            closeList_previousstate = array
+            closeList_moves.append([carVal, 'R', 1])
+            array = removeCar
+
 
         openList_moves.append([])
 
         # print(storedmove[0][0])
         # print(gasDict["B"])
         gasDict[storedmove[0][0]] = gasDict.get(storedmove[0][0]) - 1
+
 
         print(f"closed moves: {closeList_moves}")
 
@@ -353,5 +363,4 @@ def uniformCostSearch(array, gasarray):
 # print(array)
 # be sure to have a break poiunt on the following break point
 
-print(f"______________________________\nhard line: {possmoves(array, cargas)}\n______________________________\n\n\n")
 uniformCostSearch(array, cargas)
