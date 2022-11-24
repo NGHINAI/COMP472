@@ -137,7 +137,7 @@ def h4(currentArray):
 
 def canValet(valarr):
     ambulancerow = valarr[2]
-    if ambulancerow[5] == ambulancerow[4]:
+    if ambulancerow[5] == ambulancerow[4] and ambulancerow[5] != '.':
         return True
     else:
         return False
