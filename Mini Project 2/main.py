@@ -250,7 +250,7 @@ def uniformCostSearch(array, gasarray):
 
 
         for move in possmoves(array, gasarray):
-            print(f"\nstate: \n{array} \n Potential move: {move}")
+            #print(f"\nstate: \n{array} \n Potential move: {move}")
             # Problem on next line
             # what is happening is instead of finding potential states for the original array
             # it is finding potential states for the previous potentialState
@@ -348,7 +348,7 @@ def uniformCostSearch(array, gasarray):
 
 
         print(f"closed moves: {closeList_moves}")
-
+    print(array)
     endofgamevals = 0
         # take openlist game states
         # make a move
