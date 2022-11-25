@@ -214,7 +214,6 @@ def movecar(gamestate, movedetails):
     # print(temparr)
     return temparr
 
-
 def uniformCostSearch(array, gasarray):
     costcount = 0
     openList_gamestate = []
