@@ -159,24 +159,24 @@ def possmoves(statearray, gasarray):
         if (spot[1] < 5):
             spottoright = horizontalrow[spot[1] + 1]
             if (spottoright != "." and horver[spottoright] == "h"):
-                if (gasarray[spottoright] > 1):
+                if (gasarray[spottoright] >= 1):
                     possmoves.append([spottoright, "L", 1])
         if (spot[1] > 0):
             spottoleft = horizontalrow[spot[1] - 1]
             if (spottoleft != '.' and horver[spottoleft] == "h"):
-                if (gasarray[spottoleft] > 1):
+                if (gasarray[spottoleft] >= 1):
                     possmoves.append([spottoleft, "R", 1])
 
         verticalcol = statearray[:, spot[1]]
         if (spot[0] < 5):
             spotbelow = verticalcol[spot[0] + 1]
             if (spotbelow != "." and horver[spotbelow] == "v"):
-                if (gasarray[spotbelow] > 1):
+                if (gasarray[spotbelow] >= 1):
                     possmoves.append(([spotbelow, "U", 1]))
         if (spot[0] > 0):
             spotabove = verticalcol[spot[0] - 1]
             if (spotabove != "." and horver[spotabove] == "v"):
-                if (gasarray[spotabove] > 1):
+                if (gasarray[spotabove] >= 1):
                     possmoves.append(([spotabove, "D", 1]))
 
     # print(possmoves)
@@ -311,10 +311,16 @@ def uniformCostSearch(array, gasarray):
         movetocloseindex = openList_cost.index(mincost) #mincost is used to find the openlist index
         prevstatearray = openList_previousstate[movetocloseindex]
         previousmovecloseindex = 0
+        count = 0
         for i in range(len(closeList_gamestate)):
             forlooptest=closeList_gamestate[i]
             if(np.array_equiv(forlooptest,prevstatearray)):
                 previousmovecloseindex = i
+        print(f"jifjialk{previousmovecloseindex, movetocloseindex}")
+        count += 1
+        if count ==4:
+            continue
+
         storedmove = openList_moves[previousmovecloseindex][movetocloseindex]
         storedgamestate = openList_gamestate[movetocloseindex]
         storedcost = openList_cost[movetocloseindex]

@@ -3,20 +3,22 @@ import numpy as np
 import copy
 
 class puzzle:
+    openList_gamestate = []
 
     def __init__(self, array, gas):
         self.array = array
         self.gas = gas
         self.cost = 0
-        self.arrcount = 0  # Used to place the car value at the correct index
-        self.gascount = 0  # Used to count which gas value we are currently reading
-        self.carsingame = []  # Used to keep track of all the car names that are in the game
-        self. horver = {}  # Dictionary which tracks if the car can move horizontally or vertically.
-        self.carsizes = {}  # Dictionary containing the size of all cards.
+        self.prevState = []
+        self.previousMove = ""
+        self.horver = {}
+        self.carsizes = {}
+
 
     # Checks if the game is done based on if the ambulance is in its final position.
     def isgamedone(currarray):
         if currarray[2][5] == 'A' and currarray[2][4] == 'A':
+
             return True
         else:
             return False
@@ -103,24 +105,24 @@ class puzzle:
             if (spot[1] < 5):
                 spottoright = horizontalrow[spot[1] + 1]
                 if (spottoright != "." and self.horver[spottoright] == "h"):
-                    if (gasarray[spottoright] > 1):
+                    if (gasarray[spottoright] >= 1):
                         possmoves.append([spottoright, "L", 1])
             if (spot[1] > 0):
                 spottoleft = horizontalrow[spot[1] - 1]
                 if (spottoleft != '.' and self.horver[spottoleft] == "h"):
-                    if (gasarray[spottoleft] > 1):
+                    if (gasarray[spottoleft] >= 1):
                         possmoves.append([spottoleft, "R", 1])
 
             verticalcol = statearray[:, spot[1]]
             if (spot[0] < 5):
                 spotbelow = verticalcol[spot[0] + 1]
                 if (spotbelow != "." and self.horver[spotbelow] == "v"):
-                    if (gasarray[spotbelow] > 1):
+                    if (gasarray[spotbelow] >= 1):
                         possmoves.append(([spotbelow, "U", 1]))
             if (spot[0] > 0):
                 spotabove = verticalcol[spot[0] - 1]
                 if (spotabove != "." and self.horver[spotabove] == "v"):
-                    if (gasarray[spotabove] > 1):
+                    if (gasarray[spotabove] >= 1):
                         possmoves.append(([spotabove, "D", 1]))
 
         # print(possmoves)
@@ -157,8 +159,90 @@ class puzzle:
         # print(temparr)
         return temparr
 
+
+#set up
+
+# Open the input file to get values
+with open('inputfile.txt') as f:
+    lines = f.readlines()
+
+# Initialization of variables to track data
+array = np.empty((6, 6), dtype=object)  # Array that holds the car positions
+arrcount = 0  # Used to place the car value at the correct index
+gascount = 0  # Used to count which gas value we are currently reading
+carsingame = []  # Used to keep track of all the car names that are in the game
+cargas = {}  # Dictionary containing all the gas values for cars with restricted car values.
+horver = {}  # Dictionary which tracks if the car can move horizontally or vertically.
+carsizes = {}  # Dictionary containing the size of all cards.
+
+# Read through every line, we split each line into words based on empty space.
+for line in lines:
+    word = line.split(' ')
+    # Check to make sure that the line isn't a comment or empty.
+    if "#" not in word[0]:
+        if line.strip():
+            # Move every character in the word into a 6 x 6 array.
+            for char in word[0]:
+                row = int(arrcount / 6) % 6
+                col = arrcount % 6
+                # Add car name values that have not been added yet to carsingame.
+                if char not in carsingame and char != '.' and char != '\n':
+                    carsingame.append(char)
+                arrcount = arrcount + 1
+                if(arrcount<=36):
+                    array[row, col] = char
+
+        gascount = 0
+        # Take all the words after the first as that is where the gas values begin.
+        word = word[1:]
+        # For each word found after, we append the value to a cargas dictionary.
+        for words in word:
+            print("word: ")
+            print(words)
+            currcarletter = word[gascount][0]
+            currcargas = int(word[gascount][1])
+            cargas[currcarletter] = currcargas
+            gascount = gascount + 1
+
+for car in carsingame:
+    stringtochararray = list(car)
+    test = stringtochararray
+    if car not in cargas.keys():
+        cargas[car] = 100
+
+# print(cargas)
+
+# Go through all the cars in the game and create a dictionary which tracks which way it can move.
+for car in carsingame:
+    currarr = np.argwhere(array == car)
+    row1 = currarr[0][0]
+    row2 = currarr[1][0]
+    if row1 == row2:
+        horver[car] = "h"
+    else:
+        horver[car] = "v"
+
+# Create dictionary with size of all cars.
+for car in carsingame:
+    currarr = np.argwhere(array == car)
+    carsizes[car] = int(np.prod(currarr.shape) / 2)
+
+
+
 def uniformcostsearch(puzzle):
     open_list = PriorityQueue()
     closed_list = []
 
 
+    currentArray = puzzle.array
+    currentGasArray = puzzle.gas
+
+
+    while(puzzle.isgamedone(currentArray)):
+        currentPossMoves = puzzle.possmoves(currentArray, currentGasArray)
+
+        for move in currentPossMoves:
+            tempArray = puzzle.movecar(currentArray, move)
+            if puzzle.canValet(tempArray):
+                tempArray = puzzle.removeValet(tempArray)
+            if 
