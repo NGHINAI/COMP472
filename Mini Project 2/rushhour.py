@@ -9,10 +9,13 @@ class puzzle:
         self.array = array
         self.gas = gas
         self.cost = 0
-        self.prevState = []
+        self.previousState = []
         self.previousMove = ""
         self.horver = {}
         self.carsizes = {}
+
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
 
 
     # Checks if the game is done based on if the ambulance is in its final position.
@@ -83,14 +86,14 @@ class puzzle:
         carsAround = set(carsAround)
         return len(carsAround)
 
-    def canValet(valarr):
+    def canValet(self, valarr):
         ambulancerow = valarr[2]
         if ambulancerow[5] == ambulancerow[4] and ambulancerow[5] != '.':
             return True
         else:
             return False
 
-    def removeValet(valremove):
+    def removeValet(self, valremove):
         removeVal = valremove[2][5]
         ambulancerow = valremove[2]
         for x in range(0, 6):
@@ -128,7 +131,7 @@ class puzzle:
         # print(possmoves)
         return possmoves
 
-    def movecar(gamestate, movedetails):
+    def movecar(self, gamestate, movedetails):
         temparr = copy.deepcopy(gamestate)
         # print(f"game state: \n{temparr} \n with {movedetails}")
         if (movedetails[1] == "L"):
@@ -229,44 +232,50 @@ for car in carsingame:
 
 
 
-def uniformcostsearch(puzzle):
+def uniformcostsearch(puzzleObj):
     # open_list = PriorityQueue()
     open_list = []
     closed_list = []
 
 
-    currentArray = puzzle.array
-    currentGasArray = puzzle.gas
+    currentArray = puzzleObj.array
+    currentGasArray = puzzleObj.gas
+    currentState = puzzleObj
+    closed_list.append(puzzleObj)
 
     print(currentArray)
-    while(not(puzzle.isgamedone(currentArray))):
-        currentPossMoves = puzzle.possmoves(currentArray, currentGasArray)
+    movesLeft = False
+    while(not(puzzleObj.isgamedone(currentArray)) and movesLeft == False):
+        currentPossMoves = puzzleObj.possmoves(currentArray, currentGasArray)
 
         for move in currentPossMoves:
             carBeingMoved = move[0]
-            newCost=currentArray.cost
-            if not(move == currentArray.move):
-                newCost = currentArray.cost+1
+            newCost=currentState.cost
+            if not(move == currentState.previousMove):
+                newCost = currentState.cost+1
 
             newGasArray = copy.deepcopy(currentGasArray)
             newEntry = {carBeingMoved: newGasArray.get(carBeingMoved) - 1}
             newGasArray.update(newEntry)
 
-            tempArray = puzzle.movecar(currentArray, move)
+            tempArray = puzzleObj.movecar(currentArray, move)
 
-            if puzzle.canValet(tempArray):
-                tempArray = puzzle.removeValet(tempArray)
+            if puzzleObj.canValet(tempArray) and tempArray[2][5] != 'A':
+                tempArray = puzzleObj.removeValet(tempArray)
 
 
-
-            newState = puzzle(tempArray,newGasArray)
+            #print(type(puzzle))
+            newState = puzzle.__new__(puzzle)
+            newState.__init__(tempArray, newGasArray)
             newState.cost = newCost
             newState.previousState = currentArray
             newState.previousMove = move
+            newState.horver = puzzleObj.horver
+            newState.carsizes = puzzleObj.carsizes
 
             inClosedState = False
             for closedState in closed_list:
-                if np.arrayequal(closedState.array, newState.array):
+                if np.array_equal(closedState.array, newState.array):
                     inClosedState = True
 
             inOpenState = False
@@ -279,21 +288,39 @@ def uniformcostsearch(puzzle):
             if not (inOpenState) and not(inClosedState):
                 open_list.append(newState)
 
-            lowestCost = open_list[0].cost
+        lowestCost = open_list[0].cost
 
-            for openPuzzle in open_list:
-                if openPuzzle.cost < lowestCost:
-                    lowestCost = openPuzzle.cost
+        for openPuzzle in open_list:
+            if openPuzzle.cost < lowestCost:
+                lowestCost = openPuzzle.cost
 
-            puzzleArray = []
-            for openPuzzle in open_list:
-                if lowestCost == openPuzzle.cost:
-                    puzzleArray.append(openPuzzle)
+        puzzleArray = []
+        for openPuzzle in open_list:
+            if lowestCost == openPuzzle.cost:
+                puzzleArray.append(openPuzzle)
 
-            closed_list.append(puzzleArray[0])
-            open_list.remove(puzzleArray[0])
-    print(closed_list)
+        closed_list.append(puzzleArray[0])
+        open_list.remove(puzzleArray[0])
+        currentState = puzzleArray[0]
+        currentArray = puzzleArray[0].array
+        currentGasArray = puzzleArray[0].gas
 
-initialPuzzle = puzzle(array, cargas)
+        #if not open_list and closed_list[len(closed_list)-1].array[2][5] != 'A':
+        #    movesLeft = True
+        #    print("no moves left")
+    finalMove = closed_list[len(closed_list)-1]
+    tempMove = finalMove
+
+    while np.shape(tempMove.previousState) == (6,6):
+        print(tempMove.array)
+        for i in range(len(closed_list)):
+            if np.array_equal(closed_list[i].array, tempMove.previousState):
+                tempMove = closed_list[i]
+
+
+initialPuzzle = puzzle.__new__(puzzle)
+initialPuzzle.__init__(array, cargas)
+initialPuzzle.horver = horver
+initialPuzzle.carsizes = carsizes
 
 uniformcostsearch(initialPuzzle)
