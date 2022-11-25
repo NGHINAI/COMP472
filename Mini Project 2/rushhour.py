@@ -16,7 +16,7 @@ class puzzle:
 
 
     # Checks if the game is done based on if the ambulance is in its final position.
-    def isgamedone(currarray):
+    def isgamedone(self, currarray):
         if currarray[2][5] == 'A' and currarray[2][4] == 'A':
 
             return True
@@ -230,19 +230,70 @@ for car in carsingame:
 
 
 def uniformcostsearch(puzzle):
-    open_list = PriorityQueue()
+    # open_list = PriorityQueue()
+    open_list = []
     closed_list = []
 
 
     currentArray = puzzle.array
     currentGasArray = puzzle.gas
 
-
-    while(puzzle.isgamedone(currentArray)):
+    print(currentArray)
+    while(not(puzzle.isgamedone(currentArray))):
         currentPossMoves = puzzle.possmoves(currentArray, currentGasArray)
 
         for move in currentPossMoves:
+            carBeingMoved = move[0]
+            newCost=currentArray.cost
+            if not(move == currentArray.move):
+                newCost = currentArray.cost+1
+
+            newGasArray = copy.deepcopy(currentGasArray)
+            newEntry = {carBeingMoved: newGasArray.get(carBeingMoved) - 1}
+            newGasArray.update(newEntry)
+
             tempArray = puzzle.movecar(currentArray, move)
+
             if puzzle.canValet(tempArray):
                 tempArray = puzzle.removeValet(tempArray)
-            if 
+
+
+
+            newState = puzzle(tempArray,newGasArray)
+            newState.cost = newCost
+            newState.previousState = currentArray
+            newState.previousMove = move
+
+            inClosedState = False
+            for closedState in closed_list:
+                if np.arrayequal(closedState.array, newState.array):
+                    inClosedState = True
+
+            inOpenState = False
+            for openState in open_list:
+                if np.array_equal(openState.array, newState.array):
+                    if(openState.cost > newState.cost):
+                        openState.cost = newState.cost
+                    inOpenState = True
+
+            if not (inOpenState) and not(inClosedState):
+                open_list.append(newState)
+
+            lowestCost = open_list[0].cost
+
+            for openPuzzle in open_list:
+                if openPuzzle.cost < lowestCost:
+                    lowestCost = openPuzzle.cost
+
+            puzzleArray = []
+            for openPuzzle in open_list:
+                if lowestCost == openPuzzle.cost:
+                    puzzleArray.append(openPuzzle)
+
+            closed_list.append(puzzleArray[0])
+            open_list.remove(puzzleArray[0])
+    print(closed_list)
+
+initialPuzzle = puzzle(array, cargas)
+
+uniformcostsearch(initialPuzzle)
