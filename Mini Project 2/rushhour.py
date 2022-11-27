@@ -199,6 +199,8 @@ for line in lines:
         # Take all the words after the first as that is where the gas values begin.
         word = word[1:]
         # For each word found after, we append the value to a cargas dictionary.
+        with open("ucs-sol-#.txt", "w+") as sol:
+            sol.write(str(array))
         for words in word:
             print("word: ")
             print(words)
@@ -230,7 +232,8 @@ for car in carsingame:
     currarr = np.argwhere(array == car)
     carsizes[car] = int(np.prod(currarr.shape) / 2)
 
-
+with open("ucs-sol-#.txt", "a") as sol:
+    sol.write(f"\n\n\n{str(cargas)}")
 
 def uniformcostsearch(puzzleObj):
     # open_list = PriorityQueue()
@@ -311,8 +314,11 @@ def uniformcostsearch(puzzleObj):
     finalMove = closed_list[len(closed_list)-1]
     tempMove = finalMove
 
+    #store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6,6):
         print(tempMove.array)
+        with open("ucs-sol-#.txt", "a") as sol:
+            sol.write(f"\n\n\n{tempMove.array}")
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
