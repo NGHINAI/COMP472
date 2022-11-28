@@ -316,17 +316,19 @@ def uniformcostsearch(puzzleObj):
     end = time.time()
     with open("ucs-sol-#.txt", "a") as sol:
         sol.write(f"\nExecution Time: {end-start} seconds")
-
+    reversedArray = []
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
-        print(tempMove.array)
+        print(tempMove.array, tempMove.cost)
 
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
+                reversedArray.append(tempMove)
                 with open("ucs-sol-#.txt", "a") as sol:
-                    sol.write(f"\n\n\n{tempMove.array}\t{ tempMove.previousMove}")
-
+                    sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
+    with open("ucs-sol-#.txt", "a") as sol:
+        sol.write(f"\n{tempMove.array}")
 
 initialPuzzle = puzzle.__new__(puzzle)
 initialPuzzle.__init__(array, cargas)
