@@ -1,6 +1,7 @@
 from queue import PriorityQueue
 import numpy as np
 import copy
+import time
 
 class puzzle:
     openList_gamestate = []
@@ -16,7 +17,6 @@ class puzzle:
 
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
-
 
     # Checks if the game is done based on if the ambulance is in its final position.
     def isgamedone(self, currarray):
@@ -163,7 +163,7 @@ class puzzle:
         return temparr
 
 
-#set up
+# set up
 
 # Open the input file to get values
 with open('inputfile.txt') as f:
@@ -192,7 +192,7 @@ for line in lines:
                 if char not in carsingame and char != '.' and char != '\n':
                     carsingame.append(char)
                 arrcount = arrcount + 1
-                if(arrcount<=36):
+                if (arrcount <= 36):
                     array[row, col] = char
 
         gascount = 0
@@ -235,11 +235,12 @@ for car in carsingame:
 with open("ucs-sol-#.txt", "a") as sol:
     sol.write(f"\n\n\n{str(cargas)}")
 
+
 def uniformcostsearch(puzzleObj):
-    # open_list = PriorityQueue()
+    start = time.time()
+
     open_list = []
     closed_list = []
-
 
     currentArray = puzzleObj.array
     currentGasArray = puzzleObj.gas
@@ -248,14 +249,14 @@ def uniformcostsearch(puzzleObj):
 
     print(currentArray)
     movesLeft = False
-    while(not(puzzleObj.isgamedone(currentArray)) and movesLeft == False):
+    while (not (puzzleObj.isgamedone(currentArray)) and movesLeft == False):
         currentPossMoves = puzzleObj.possmoves(currentArray, currentGasArray)
 
         for move in currentPossMoves:
             carBeingMoved = move[0]
-            newCost=currentState.cost
-            if not(move == currentState.previousMove):
-                newCost = currentState.cost+1
+            newCost = currentState.cost
+            if not (move == currentState.previousMove):
+                newCost = currentState.cost + 1
 
             newGasArray = copy.deepcopy(currentGasArray)
             newEntry = {carBeingMoved: newGasArray.get(carBeingMoved) - 1}
@@ -266,8 +267,7 @@ def uniformcostsearch(puzzleObj):
             if puzzleObj.canValet(tempArray) and tempArray[2][5] != 'A':
                 tempArray = puzzleObj.removeValet(tempArray)
 
-
-            #print(type(puzzle))
+            # print(type(puzzle))
             newState = puzzle.__new__(puzzle)
             newState.__init__(tempArray, newGasArray)
             newState.cost = newCost
@@ -284,11 +284,11 @@ def uniformcostsearch(puzzleObj):
             inOpenState = False
             for openState in open_list:
                 if np.array_equal(openState.array, newState.array):
-                    if(openState.cost > newState.cost):
+                    if (openState.cost > newState.cost):
                         openState.cost = newState.cost
                     inOpenState = True
 
-            if not (inOpenState) and not(inClosedState):
+            if not (inOpenState) and not (inClosedState):
                 open_list.append(newState)
 
         lowestCost = open_list[0].cost
@@ -308,20 +308,24 @@ def uniformcostsearch(puzzleObj):
         currentArray = puzzleArray[0].array
         currentGasArray = puzzleArray[0].gas
 
-        #if not open_list and closed_list[len(closed_list)-1].array[2][5] != 'A':
+        # if not open_list and closed_list[len(closed_list)-1].array[2][5] != 'A':
         #    movesLeft = True
         #    print("no moves left")
-    finalMove = closed_list[len(closed_list)-1]
+    finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
+    end = time.time()
+    with open("ucs-sol-#.txt", "a") as sol:
+        sol.write(f"\nExecution Time: {end-start} seconds")
 
-    #store all info in a couple lists then iterate through
-    while np.shape(tempMove.previousState) == (6,6):
+    # store all info in a couple lists then iterate through
+    while np.shape(tempMove.previousState) == (6, 6):
         print(tempMove.array)
-        with open("ucs-sol-#.txt", "a") as sol:
-            sol.write(f"\n\n\n{tempMove.array}")
+
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
+                with open("ucs-sol-#.txt", "a") as sol:
+                    sol.write(f"\n\n\n{tempMove.array}\t{ tempMove.previousMove}")
 
 
 initialPuzzle = puzzle.__new__(puzzle)
