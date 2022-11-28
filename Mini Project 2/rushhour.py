@@ -14,6 +14,7 @@ class puzzle:
         self.previousMove = ""
         self.horver = {}
         self.carsizes = {}
+        self.distanceTravelled = 0
 
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
@@ -71,8 +72,8 @@ class puzzle:
         # row above
         for row in range(1, 4):
             for col in range(0, self.array.shape[1]):
-                if (currentArray[row][col + 1] == 'A' and self.horver.get(
-                        currentArray[row][col + 1] == "v")):  # column after is A
+                if (currentArray[row][col] == 'A' and self.horver.get(
+                        currentArray[row][col] == "v")):  # column after is A
                     carsAround.append(currentArray[row][col])
                 if (currentArray[row][col - 1] == 'A' and self.horver.get(
                         currentArray[row][col - 1] == "v")):  # column before is A
@@ -290,6 +291,15 @@ def uniformcostsearch(puzzleObj):
 
             if not (inOpenState) and not (inClosedState):
                 open_list.append(newState)
+        alreadyInClosedList = False
+        for value in range(len(closed_list)):
+            if np.array_equal(currentState, closed_list[value]):
+                alreadyInClosedList = True
+
+        if len(open_list) == 0 and (len(puzzleObj.possmoves(closed_list[len(closed_list) - 1].array, closed_list[
+            len(closed_list) - 1].gas)) == 0 or alreadyInClosedList):
+            print("No Solution")
+            break
 
         lowestCost = open_list[0].cost
 
@@ -319,20 +329,254 @@ def uniformcostsearch(puzzleObj):
     reversedArray = []
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
-        print(tempMove.array, tempMove.cost)
+        # print(tempMove.array, tempMove.cost)
 
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
                 reversedArray.append(tempMove)
+                with open(f"ucs-sol-#.txt", "a") as sol:#f"ucs-sol-{counter}.txt"
+                    sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
+    with open("ucs-sol-#.txt", "a") as sol:
+        sol.write(f"\n{tempMove.array}")
+
+
+
+
+def GBFS(puzzleObj, heuristicNum):
+    start = time.time()
+
+    open_list = []
+    closed_list = []
+
+    currentArray = puzzleObj.array
+    currentGasArray = puzzleObj.gas
+    currentState = puzzleObj
+    closed_list.append(puzzleObj)
+
+    print(currentArray)
+    movesLeft = False
+    while (not (puzzleObj.isgamedone(currentArray)) and movesLeft == False):
+        currentPossMoves = puzzleObj.possmoves(currentArray, currentGasArray)
+
+        for move in currentPossMoves:
+            carBeingMoved = move[0]
+            newCost = currentState.cost
+
+
+            newGasArray = copy.deepcopy(currentGasArray)
+            newEntry = {carBeingMoved: newGasArray.get(carBeingMoved) - 1}
+            newGasArray.update(newEntry)
+
+            tempArray = puzzleObj.movecar(currentArray, move)
+
+            if not (move == currentState.previousMove):
+                if heuristicNum == 1:
+                    newCost = puzzleObj.h1(tempArray)
+                elif heuristicNum == 2:
+                    newCost = puzzleObj.h2(tempArray)
+                elif heuristicNum == 3:
+                    newCost = puzzleObj.h3(tempArray)
+                elif heuristicNum == 4:
+                    newCost = puzzleObj.h4(tempArray)
+
+            if puzzleObj.canValet(tempArray) and tempArray[2][5] != 'A':
+                tempArray = puzzleObj.removeValet(tempArray)
+
+            # print(type(puzzle))
+            newState = puzzle.__new__(puzzle)
+            newState.__init__(tempArray, newGasArray)
+            newState.cost = newCost
+            newState.previousState = currentArray
+            newState.previousMove = move
+            newState.horver = puzzleObj.horver
+            newState.carsizes = puzzleObj.carsizes
+
+            inClosedState = False
+            for closedState in closed_list:
+                if np.array_equal(closedState.array, newState.array):
+                    inClosedState = True
+
+            inOpenState = False
+            for openState in open_list:
+                if np.array_equal(openState.array, newState.array):
+                    if (openState.cost > newState.cost):
+                        openState.cost = newState.cost
+                    inOpenState = True
+
+            if not (inOpenState) and not (inClosedState):
+                open_list.append(newState)
+        alreadyInClosedList = False
+        for value in range(len(closed_list)):
+            if np.array_equal(currentState, closed_list[value]):
+                alreadyInClosedList =True
+
+        if len(open_list)==0 and (len(puzzleObj.possmoves(closed_list[len(closed_list)-1].array, closed_list[len(closed_list)-1].gas))==0 or alreadyInClosedList):
+            print("No Solution")
+            break
+        lowestCost = open_list[0].cost
+
+        for openPuzzle in open_list:
+            if openPuzzle.cost < lowestCost:
+                lowestCost = openPuzzle.cost
+
+        puzzleArray = []
+        for openPuzzle in open_list:
+            if lowestCost == openPuzzle.cost:
+                puzzleArray.append(openPuzzle)
+
+        closed_list.append(puzzleArray[0])
+        open_list.remove(puzzleArray[0])
+        currentState = puzzleArray[0]
+        currentArray = puzzleArray[0].array
+        currentGasArray = puzzleArray[0].gas
+
+        # if not open_list and closed_list[len(closed_list)-1].array[2][5] != 'A':
+        #    movesLeft = True
+        #    print("no moves left")
+    finalMove = closed_list[len(closed_list) - 1]
+    tempMove = finalMove
+    end = time.time()
+    with open(f"GBFS-sol-#.txt", "a") as sol: #f"GBFS-sol-{counter}.txt"
+        sol.write(f"\nExecution Time: {end-start} seconds")
+
+    # store all info in a couple lists then iterate through
+    while np.shape(tempMove.previousState) == (6, 6):
+        print(f"{tempMove.array}, {tempMove.cost}\n")
+
+        for i in range(len(closed_list)):
+            if np.array_equal(closed_list[i].array, tempMove.previousState):
+                tempMove = closed_list[i]
+
                 with open("ucs-sol-#.txt", "a") as sol:
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
     with open("ucs-sol-#.txt", "a") as sol:
         sol.write(f"\n{tempMove.array}")
+
+def AStar(puzzleObj, heuristicNum):
+    start = time.time()
+
+    open_list = []
+    closed_list = []
+
+    currentArray = puzzleObj.array
+    currentGasArray = puzzleObj.gas
+    currentState = puzzleObj
+    closed_list.append(puzzleObj)
+
+    print(currentArray)
+    movesLeft = False
+    while (not (puzzleObj.isgamedone(currentArray)) and movesLeft == False):
+        currentPossMoves = puzzleObj.possmoves(currentArray, currentGasArray)
+
+        for move in currentPossMoves:
+            carBeingMoved = move[0]
+            newDistanceCost = currentState.distanceTravelled
+            if not (move == currentState.previousMove):
+                newDistanceCost = currentState.distanceTravelled
+
+
+            newGasArray = copy.deepcopy(currentGasArray)
+            newEntry = {carBeingMoved: newGasArray.get(carBeingMoved) - 1}
+            newGasArray.update(newEntry)
+
+            tempArray = puzzleObj.movecar(currentArray, move)
+            newCost = currentState.cost
+            if not (move == currentState.previousMove):
+                newCost = currentState.cost + 1
+
+            if not (move == currentState.previousMove):
+                if heuristicNum == 1:
+                    newCost = puzzleObj.h1(tempArray) + newDistanceCost
+                elif heuristicNum == 2:
+                    newCost = puzzleObj.h2(tempArray) + newDistanceCost
+                elif heuristicNum == 3:
+                    newCost = puzzleObj.h3(tempArray) + newDistanceCost
+                elif heuristicNum == 4:
+                    newCost = puzzleObj.h4(tempArray) + newDistanceCost
+
+            if puzzleObj.canValet(tempArray) and tempArray[2][5] != 'A':
+                tempArray = puzzleObj.removeValet(tempArray)
+
+            # print(type(puzzle))
+            newState = puzzle.__new__(puzzle)
+            newState.__init__(tempArray, newGasArray)
+            newState.cost = newCost
+            newState.distanceTravelled = newDistanceCost
+            newState.previousState = currentArray
+            newState.previousMove = move
+            newState.horver = puzzleObj.horver
+            newState.carsizes = puzzleObj.carsizes
+
+            inClosedState = False
+            for closedState in closed_list:
+                if np.array_equal(closedState.array, newState.array):
+                    inClosedState = True
+
+            inOpenState = False
+            for openState in open_list:
+                if np.array_equal(openState.array, newState.array):
+                    if (openState.cost > newState.cost):
+                        openState.cost = newState.cost
+                    inOpenState = True
+
+            if not (inOpenState) and not (inClosedState):
+                open_list.append(newState)
+
+        alreadyInClosedList = False
+        for value in range(len(closed_list)):
+            if np.array_equal(currentState, closed_list[value]):
+                alreadyInClosedList = True
+
+        if len(open_list) == 0 and (len(puzzleObj.possmoves(closed_list[len(closed_list) - 1].array, closed_list[
+            len(closed_list) - 1].gas)) == 0 or alreadyInClosedList):
+            print("No Solution")
+            break
+        lowestCost = open_list[0].cost
+
+        for openPuzzle in open_list:
+            if openPuzzle.cost < lowestCost:
+                lowestCost = openPuzzle.cost
+
+        puzzleArray = []
+        for openPuzzle in open_list:
+            if lowestCost == openPuzzle.cost:
+                puzzleArray.append(openPuzzle)
+
+        closed_list.append(puzzleArray[0])
+        open_list.remove(puzzleArray[0])
+        currentState = puzzleArray[0]
+        currentArray = puzzleArray[0].array
+        currentGasArray = puzzleArray[0].gas
+
+        # if not open_list and closed_list[len(closed_list)-1].array[2][5] != 'A':
+        #    movesLeft = True
+        #    print("no moves left")
+    finalMove = closed_list[len(closed_list) - 1]
+    tempMove = finalMove
+    end = time.time()
+    with open(f"AStar-sol-#.txt", "a") as sol:#f"AStar-sol-{counter}.txt"
+        sol.write(f"\nExecution Time: {end-start} seconds")
+
+    # store all info in a couple lists then iterate through
+    while np.shape(tempMove.previousState) == (6, 6):
+        print(f"{tempMove.array}, {tempMove.cost}\n")
+
+        for i in range(len(closed_list)):
+            if np.array_equal(closed_list[i].array, tempMove.previousState):
+                tempMove = closed_list[i]
+
+                with open("ucs-sol-#.txt", "a") as sol:
+                    sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
+    with open("ucs-sol-#.txt", "a") as sol:
+        sol.write(f"\n{tempMove.array}")
+
+
 
 initialPuzzle = puzzle.__new__(puzzle)
 initialPuzzle.__init__(array, cargas)
 initialPuzzle.horver = horver
 initialPuzzle.carsizes = carsizes
 
-uniformcostsearch(initialPuzzle)
+# uniformcostsearch(initialPuzzle)
+AStar(initialPuzzle, 4)
