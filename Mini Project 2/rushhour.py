@@ -70,23 +70,22 @@ class puzzle:
         # if we want to ignore parallel cars check if horver.get(currentArray[row][col+1] == "v")
         carsAround = []
         # row above
-        for row in range(1, 4):
-            for col in range(0, self.array.shape[1]):
-                if (currentArray[row][col] == 'A' and self.horver.get(
-                        currentArray[row][col] == "v")):  # column after is A
-                    carsAround.append(currentArray[row][col])
-                if (currentArray[row][col - 1] == 'A' and self.horver.get(
-                        currentArray[row][col - 1] == "v")):  # column before is A
-                    carsAround.append(currentArray[row][col])
-                if (currentArray[row + 1][col] == 'A' and self.horver.get(
-                        currentArray[row + 1][col] == "v")):  # row below is A
-                    carsAround.append(currentArray[row][col])
-                if (currentArray[row - 1][col] == 'A' and self.horver.get(
-                        currentArray[row - 1][col] == "v")):  # row above is A
-                    carsAround.append(currentArray[row][col])
-        carsAround = set(carsAround)
-        return len(carsAround)
 
+        for col in range(0, self.array.shape[1]):
+            if (currentArray[2][col] == 'A' and self.horver.get(
+                    currentArray[2][col] == "v")):  # column after is A
+                        carsAround.append(currentArray[row][col])
+            if (currentArray[2][col - 1] == 'A' and self.horver.get(
+                    currentArray[2][col - 1] == "v")):  # column before is A
+                        carsAround.append(currentArray[row][col])
+            if (currentArray[2 + 1][col] == 'A' and self.horver.get(
+                    currentArray[2][col] == "v")):  # row below is A
+                        carsAround.append(currentArray[row][col])
+            if (currentArray[row][col] == 'A' and self.horver.get(
+                    currentArray[2-1][col] == "v")):  # row above is A
+                        carsAround.append(currentArray[row][col])
+        length = len(carsAround)
+        return length
     def canValet(self, valarr):
         ambulancerow = valarr[2]
         if ambulancerow[5] == ambulancerow[4] and ambulancerow[5] != '.':
@@ -200,7 +199,7 @@ for line in lines:
         # Take all the words after the first as that is where the gas values begin.
         word = word[1:]
         # For each word found after, we append the value to a cargas dictionary.
-        with open("ucs-sol-#.txt", "w+") as sol:
+        with open("ucs-sol-#.txt", "w+") as sol: #TODO flexible with algo and number
             sol.write(str(array))
         for words in word:
             print("word: ")
@@ -233,7 +232,7 @@ for car in carsingame:
     currarr = np.argwhere(array == car)
     carsizes[car] = int(np.prod(currarr.shape) / 2)
 
-with open("ucs-sol-#.txt", "a") as sol:
+with open("ucs-sol-#.txt", "a") as sol: #TODO flexible with algo and number
     sol.write(f"\n\n\n{str(cargas)}")
 
 
@@ -324,8 +323,8 @@ def uniformcostsearch(puzzleObj):
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
     end = time.time()
-    with open("ucs-sol-#.txt", "a") as sol:
-        sol.write(f"\nExecution Time: {end-start} seconds")
+    with open("ucs-sol-#.txt", "a") as sol: #TODO flexible with number
+        sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
     reversedArray = []
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
@@ -335,9 +334,9 @@ def uniformcostsearch(puzzleObj):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
                 reversedArray.append(tempMove)
-                with open(f"ucs-sol-#.txt", "a") as sol:#f"ucs-sol-{counter}.txt"
+                with open(f"ucs-sol-#.txt", "a") as sol:#f"ucs-sol-{counter}.txt" #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
-    with open("ucs-sol-#.txt", "a") as sol:
+    with open("ucs-sol-#.txt", "a") as sol:#TODO flexible with number
         sol.write(f"\n{tempMove.array}")
 
 
@@ -437,8 +436,8 @@ def GBFS(puzzleObj, heuristicNum):
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
     end = time.time()
-    with open(f"GBFS-sol-#.txt", "a") as sol: #f"GBFS-sol-{counter}.txt"
-        sol.write(f"\nExecution Time: {end-start} seconds")
+    with open(f"GBFS-sol-#.txt", "a") as sol: #f"GBFS-sol-{counter}.txt" #TODO flexible with number
+        sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
 
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
@@ -448,9 +447,9 @@ def GBFS(puzzleObj, heuristicNum):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
 
-                with open("ucs-sol-#.txt", "a") as sol:
+                with open("GBFS-sol-#.txt", "a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
-    with open("ucs-sol-#.txt", "a") as sol:
+    with open("GBFS-sol-#.txt", "a") as sol: #TODO flexible with number
         sol.write(f"\n{tempMove.array}")
 
 def AStar(puzzleObj, heuristicNum):
@@ -555,8 +554,8 @@ def AStar(puzzleObj, heuristicNum):
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
     end = time.time()
-    with open(f"AStar-sol-#.txt", "a") as sol:#f"AStar-sol-{counter}.txt"
-        sol.write(f"\nExecution Time: {end-start} seconds")
+    with open(f"AStar-sol-#.txt", "a") as sol:#f"AStar-sol-{counter}.txt" #TODO flexible with number
+        sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
 
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
@@ -566,9 +565,9 @@ def AStar(puzzleObj, heuristicNum):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
 
-                with open("ucs-sol-#.txt", "a") as sol:
+                with open("AStar-sol-#.txt", "a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
-    with open("ucs-sol-#.txt", "a") as sol:
+    with open("AStar-sol-#.txt", "a") as sol: #TODO flexible with number
         sol.write(f"\n{tempMove.array}")
 
 
@@ -579,4 +578,5 @@ initialPuzzle.horver = horver
 initialPuzzle.carsizes = carsizes
 
 # uniformcostsearch(initialPuzzle)
-AStar(initialPuzzle, 4)
+GBFS(initialPuzzle, 3)
+AStar(initialPuzzle, 3)
