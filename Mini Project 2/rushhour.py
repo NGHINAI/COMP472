@@ -174,7 +174,6 @@ carsingame = []  # Used to keep track of all the car names that are in the game
 cargas = {}  # Dictionary containing all the gas values for cars with restricted car values.
 horver = {}  # Dictionary which tracks if the car can move horizontally or vertically.
 carsizes = {}  # Dictionary containing the size of all cards.
-
 # Read through every line, we split each line into words based on empty space.
 for line in lines:
     word = line.split(' ')
@@ -196,8 +195,6 @@ for line in lines:
         # Take all the words after the first as that is where the gas values begin.
         word = word[1:]
         # For each word found after, we append the value to a cargas dictionary.
-        with open("ucs-sol-#.txt", "w+") as sol: #TODO flexible with algo and number maybe move this and car gas in each method
-            sol.write(str(array))
         for words in word:
             print("word: ")
             print(words)
@@ -206,34 +203,40 @@ for line in lines:
             cargas[currcarletter] = currcargas
             gascount = gascount + 1
 
-for car in carsingame:
-    stringtochararray = list(car)
-    test = stringtochararray
-    if car not in cargas.keys():
-        cargas[car] = 100
+    for car in carsingame:
+        stringtochararray = list(car)
+        test = stringtochararray
+        if car not in cargas.keys():
+            cargas[car] = 100
 
 # print(cargas)
 
 # Go through all the cars in the game and create a dictionary which tracks which way it can move.
-for car in carsingame:
-    currarr = np.argwhere(array == car)
-    row1 = currarr[0][0]
-    row2 = currarr[1][0]
-    if row1 == row2:
-        horver[car] = "h"
-    else:
-        horver[car] = "v"
+    for car in carsingame:
+        currarr = np.argwhere(array == car)
+        row1 = currarr[0][0]
+        row2 = currarr[1][0]
+        if row1 == row2:
+            horver[car] = "h"
+        else:
+            horver[car] = "v"
 
-# Create dictionary with size of all cars.
-for car in carsingame:
-    currarr = np.argwhere(array == car)
-    carsizes[car] = int(np.prod(currarr.shape) / 2)
-
-with open("ucs-sol-#.txt", "a") as sol: #TODO flexible with algo and number maybe move this and car gas in each method
-    sol.write(f"\n\n\n{str(cargas)}")
+    # Create dictionary with size of all cars.
+    for car in carsingame:
+        currarr = np.argwhere(array == car)
+        carsizes[car] = int(np.prod(currarr.shape) / 2)
 
 
-def uniformcostsearch(puzzleObj):
+
+def uniformcostsearch(puzzleObj, puzzleNumber):
+    with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt",
+              "w+") as sol:  # TODO flexible with algo and number maybe move this and car gas in each method
+        sol.write(str(array))
+    with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt",
+              "a") as sol:  # TODO flexible with algo and number maybe move this and car gas in each method
+        sol.write(f"\n\n\n{str(cargas)}")
+
+
     start = time.time()
 
     open_list = []
@@ -320,7 +323,7 @@ def uniformcostsearch(puzzleObj):
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
     end = time.time()
-    with open("ucs-sol-#.txt", "a") as sol: #TODO flexible with number
+    with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol: #TODO flexible with number
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
     reversedArray = []
     # store all info in a couple lists then iterate through
@@ -331,15 +334,20 @@ def uniformcostsearch(puzzleObj):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
                 reversedArray.append(tempMove)
-                with open(f"ucs-sol-#.txt", "a") as sol:#f"ucs-sol-{counter}.txt" #TODO flexible with number
+                with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:#f"ucs-sol-{counter}.txt" #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
-    with open("ucs-sol-#.txt", "a") as sol:#TODO flexible with number
+    with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:#TODO flexible with number
         sol.write(f"\n{tempMove.array}")
+        print(f"\n{tempMove.array}")
 
 
 
 
-def GBFS(puzzleObj, heuristicNum):
+def GBFS(puzzleObj, heuristicNum, puzzleNumber):
+    with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
+        sol.write(str(array))
+    with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
+        sol.write(f"\n\n\n{str(cargas)}")
     start = time.time()
 
     open_list = []
@@ -434,8 +442,10 @@ def GBFS(puzzleObj, heuristicNum):
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
     end = time.time()
-    with open(f"GBFS-sol-#.txt", "a") as sol: #f"GBFS-sol-{counter}.txt" #TODO flexible with number
+    with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol: #f"GBFS-sol-{counter}.txt" #TODO flexible with number
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
+    with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol: #f"GBFS-sol-{counter}.txt" #TODO flexible with number
+        sol.write(f"\nFinal State: \n{tempMove.array}")
 
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
@@ -444,13 +454,16 @@ def GBFS(puzzleObj, heuristicNum):
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
-
-                with open("GBFS-sol-#.txt", "a") as sol: #TODO flexible with number
+                with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
-    with open("GBFS-sol-#.txt", "a") as sol: #TODO flexible with number
-        sol.write(f"\n{tempMove.array}")
 
-def AStar(puzzleObj, heuristicNum):
+
+
+def AStar(puzzleObj, heuristicNum, puzzleNumber):
+    with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
+        sol.write(str(array))
+    with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
+        sol.write(f"\n\n\n{str(cargas)}")
     start = time.time()
 
     open_list = []
@@ -552,9 +565,10 @@ def AStar(puzzleObj, heuristicNum):
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
     end = time.time()
-    with open(f"AStar-sol-#.txt", "a") as sol:#f"AStar-sol-{counter}.txt" #TODO flexible with number
+    with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:#f"AStar-sol-{counter}.txt" #TODO flexible with number
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
-
+    with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol: #f"GBFS-sol-{counter}.txt" #TODO flexible with number
+        sol.write(f"\nFinal State: \n{tempMove.array}")
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
         print(f"{tempMove.array}, {tempMove.cost}\n")
@@ -563,10 +577,8 @@ def AStar(puzzleObj, heuristicNum):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
 
-                with open("AStar-sol-#.txt", "a") as sol: #TODO flexible with number
+                with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
-    with open("AStar-sol-#.txt", "a") as sol: #TODO flexible with number
-        sol.write(f"\n{tempMove.array}")
 
 
 
@@ -574,7 +586,13 @@ initialPuzzle = puzzle.__new__(puzzle)
 initialPuzzle.__init__(array, cargas)
 initialPuzzle.horver = horver
 initialPuzzle.carsizes = carsizes
-
-# uniformcostsearch(initialPuzzle)
-# GBFS(initialPuzzle, 4)
-AStar(initialPuzzle, 4)
+for puzzleNum in range(1):
+    # uniformcostsearch(initialPuzzle, puzzleNum)
+    GBFS(initialPuzzle, 1, puzzleNum)
+    GBFS(initialPuzzle, 2, puzzleNum)
+    GBFS(initialPuzzle, 3, puzzleNum)
+    GBFS(initialPuzzle, 4, puzzleNum)
+    AStar(initialPuzzle, 1, puzzleNum)
+    AStar(initialPuzzle, 2, puzzleNum)
+    AStar(initialPuzzle, 3, puzzleNum)
+    AStar(initialPuzzle, 4, puzzleNum)
