@@ -196,7 +196,7 @@ for line in lines:
         # Take all the words after the first as that is where the gas values begin.
         word = word[1:]
         # For each word found after, we append the value to a cargas dictionary.
-        with open("ucs-sol-#.txt", "w+") as sol: #TODO flexible with algo and number
+        with open("ucs-sol-#.txt", "w+") as sol: #TODO flexible with algo and number maybe move this and car gas in each method
             sol.write(str(array))
         for words in word:
             print("word: ")
@@ -229,7 +229,7 @@ for car in carsingame:
     currarr = np.argwhere(array == car)
     carsizes[car] = int(np.prod(currarr.shape) / 2)
 
-with open("ucs-sol-#.txt", "a") as sol: #TODO flexible with algo and number
+with open("ucs-sol-#.txt", "a") as sol: #TODO flexible with algo and number maybe move this and car gas in each method
     sol.write(f"\n\n\n{str(cargas)}")
 
 
