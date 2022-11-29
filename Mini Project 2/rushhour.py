@@ -72,18 +72,15 @@ class puzzle:
         # row above
 
         for col in range(0, self.array.shape[1]):
-            if (currentArray[2][col] == 'A' and self.horver.get(
-                    currentArray[2][col] == "v")):  # column after is A
-                        carsAround.append(currentArray[row][col])
-            if (currentArray[2][col - 1] == 'A' and self.horver.get(
-                    currentArray[2][col - 1] == "v")):  # column before is A
-                        carsAround.append(currentArray[row][col])
-            if (currentArray[2 + 1][col] == 'A' and self.horver.get(
-                    currentArray[2][col] == "v")):  # row below is A
-                        carsAround.append(currentArray[row][col])
-            if (currentArray[row][col] == 'A' and self.horver.get(
-                    currentArray[2-1][col] == "v")):  # row above is A
-                        carsAround.append(currentArray[row][col])
+            if col<=4 and currentArray[2][col-1] == 'A' and self.horver.get(currentArray[2][col+1]) == "v":  # column after is A
+                carsAround.append(currentArray[2][col+1])
+            if currentArray[2][col] == 'A' and self.horver.get(currentArray[2][col - 1]) == "v" :  # column before is A
+                carsAround.append(currentArray[2][col-1])
+            if currentArray[2][col] == 'A' and self.horver.get(currentArray[3][col]) == "v" and (currentArray[2][5] != 'A'):  # row below is A
+                carsAround.append(currentArray[3][col])
+            if currentArray[2][col] == 'A' and self.horver.get(currentArray[1][col]) == "v" and (currentArray[2][5] != 'A'):  # row above is A
+                    carsAround.append(currentArray[1][col])
+
         length = len(carsAround)
         return length
     def canValet(self, valarr):
@@ -379,6 +376,7 @@ def GBFS(puzzleObj, heuristicNum):
                 elif heuristicNum == 4:
                     newCost = puzzleObj.h4(tempArray)
 
+
             if puzzleObj.canValet(tempArray) and tempArray[2][5] != 'A':
                 tempArray = puzzleObj.removeValet(tempArray)
 
@@ -578,5 +576,5 @@ initialPuzzle.horver = horver
 initialPuzzle.carsizes = carsizes
 
 # uniformcostsearch(initialPuzzle)
-GBFS(initialPuzzle, 3)
-AStar(initialPuzzle, 3)
+# GBFS(initialPuzzle, 4)
+AStar(initialPuzzle, 4)
