@@ -587,7 +587,7 @@ initialPuzzle.__init__(array, cargas)
 initialPuzzle.horver = horver
 initialPuzzle.carsizes = carsizes
 for puzzleNum in range(1):
-    # uniformcostsearch(initialPuzzle, puzzleNum)
+    uniformcostsearch(initialPuzzle, puzzleNum)
     GBFS(initialPuzzle, 1, puzzleNum)
     GBFS(initialPuzzle, 2, puzzleNum)
     GBFS(initialPuzzle, 3, puzzleNum)
