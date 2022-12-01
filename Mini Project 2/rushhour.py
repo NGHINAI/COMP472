@@ -73,12 +73,6 @@ class puzzle:
         for col in range(0, self.array.shape[1]):
             if col<=4 and currentArray[2][col-1] == 'A' and self.horver.get(currentArray[2][col+1]) == "v":  # column after is A
                 carsAround.append(currentArray[2][col+1])
-            if currentArray[2][col] == 'A' and self.horver.get(currentArray[2][col - 1]) == "v" :  # column before is A
-                carsAround.append(currentArray[2][col-1])
-            if currentArray[2][col] == 'A' and self.horver.get(currentArray[3][col]) == "v" and (currentArray[2][5] != 'A'):  # row below is A
-                carsAround.append(currentArray[3][col])
-            if currentArray[2][col] == 'A' and self.horver.get(currentArray[1][col]) == "v" and (currentArray[2][5] != 'A'):  # row above is A
-                    carsAround.append(currentArray[1][col])
 
         length = len(carsAround)
         return length
@@ -255,6 +249,8 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
     end = time.time()
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol: #TODO flexible with number
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
+    with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt","a") as sol: #f"GBFS-sol-{counter}.txt" #TODO flexible with number
+        sol.write(f"\nFinal State: \n{tempMove.array}")
     reversedArray = []
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
@@ -269,6 +265,10 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:#TODO flexible with number
         sol.write(f"\n{tempMove.array}")
         print(f"\n{tempMove.array}")
+
+    #adding to an analysis
+    with open(f".\\analysis.txt", "a") as sol:
+        sol.write(f"{puzzleNumber}\t UCS\tNA\t{solnLength}\t{searchLength} \t{end - start} ")
 
 
 
@@ -386,6 +386,9 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
                 tempMove = closed_list[i]
                 with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
+    #adding to analysis
+    with open(f".\\analysis.txt", "a") as sol:
+        sol.write(f"{puzzleNumber}\t GBFS\th{heuristicNum}\t{solnLength}\t{searchLength} \t{end - start} ")
 
 
 
@@ -509,8 +512,9 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
 
                 with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
-
-
+    #adding to analysis
+    with open(f".\\analysis.txt","a") as sol:
+        sol.write(f"{puzzleNumber}\t A/A*\th{heuristicNum}\t{solnLength}\t{searchLength} \t{end-start} ")
 # set up
 
 # Open the input file to get values
