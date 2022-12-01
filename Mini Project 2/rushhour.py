@@ -246,6 +246,8 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
         #    print("no moves left")
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
+    movesList = []
+    searchLength = len(closed_list)
     end = time.time()
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol: #TODO flexible with number
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
@@ -259,6 +261,7 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
+                movesList.append(closed_list[i].previousMove)
                 reversedArray.append(tempMove)
                 with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:#f"ucs-sol-{counter}.txt" #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
@@ -266,6 +269,18 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
         sol.write(f"\n{tempMove.array}")
         print(f"\n{tempMove.array}")
 
+    solnLength = 0
+    movesList.remove('')
+    solutionPath = []
+    previousMove = []
+    for move in range(len(movesList)):
+        if not np.array_equal(movesList[move], previousMove):
+            solnLength = solnLength + 1
+            solutionPath.append(movesList[move])
+        else:
+            solutionPath[len(solutionPath) - 1][2] += 1
+
+        previousMove = movesList[move]
     #adding to an analysis
     with open(f".\\analysis.txt", "a") as sol:
         sol.write(f"{puzzleNumber}\t UCS\tNA\t{solnLength}\t{searchLength} \t{end - start} ")
@@ -371,6 +386,8 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
         #    print("no moves left")
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
+    movesList = []
+    searchLength = len(closed_list)
     end = time.time()
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol: #f"GBFS-sol-{counter}.txt" #TODO flexible with number
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
@@ -384,8 +401,23 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
+                movesList.append(closed_list[i].previousMove)
                 with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
+
+    solnLength = 0
+    movesList.remove('')
+    solutionPath = []
+    previousMove = []
+    for move in range(len(movesList)):
+        if not np.array_equal(movesList[move], previousMove):
+            solnLength = solnLength + 1
+            solutionPath.append(movesList[move])
+        else:
+            solutionPath[len(solutionPath) - 1][2] += 1
+
+        previousMove = movesList[move]
+
     #adding to analysis
     with open(f".\\analysis.txt", "a") as sol:
         sol.write(f"{puzzleNumber}\t GBFS\th{heuristicNum}\t{solnLength}\t{searchLength} \t{end - start} ")
@@ -497,6 +529,8 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
         #    print("no moves left")
     finalMove = closed_list[len(closed_list) - 1]
     tempMove = finalMove
+    movesList = []
+    searchLength = len(closed_list)
     end = time.time()
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:#f"AStar-sol-{counter}.txt" #TODO flexible with number
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
@@ -509,9 +543,23 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
-
+                movesList.append(closed_list[i].previousMove)
                 with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol: #TODO flexible with number
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
+
+    solnLength = 0
+    movesList.remove('')
+    solutionPath = []
+    previousMove = []
+    for move in range(len(movesList)):
+        if not np.array_equal(movesList[move], previousMove):
+            solnLength = solnLength + 1
+            solutionPath.append(movesList[move])
+        else:
+            solutionPath[len(solutionPath)-1][2] += 1
+
+        previousMove = movesList[move]
+
     #adding to analysis
     with open(f".\\analysis.txt","a") as sol:
         sol.write(f"{puzzleNumber}\t A/A*\th{heuristicNum}\t{solnLength}\t{searchLength} \t{end-start} ")
@@ -593,14 +641,14 @@ for line in lines:
     initialPuzzle.horver = horver
     initialPuzzle.carsizes = carsizes
 
-    uniformcostsearch(initialPuzzle, puzzleNum)
-    GBFS(initialPuzzle, 1, puzzleNum)
-    GBFS(initialPuzzle, 2, puzzleNum)
-    GBFS(initialPuzzle, 3, puzzleNum)
-    GBFS(initialPuzzle, 4, puzzleNum)
+    #uniformcostsearch(initialPuzzle, puzzleNum)
+    #GBFS(initialPuzzle, 1, puzzleNum)
+    #GBFS(initialPuzzle, 2, puzzleNum)
+    #GBFS(initialPuzzle, 3, puzzleNum)
+    #GBFS(initialPuzzle, 4, puzzleNum)
     AStar(initialPuzzle, 1, puzzleNum)
-    AStar(initialPuzzle, 2, puzzleNum)
-    AStar(initialPuzzle, 3, puzzleNum)
-    AStar(initialPuzzle, 4, puzzleNum)
+    #AStar(initialPuzzle, 2, puzzleNum)
+    #AStar(initialPuzzle, 3, puzzleNum)
+    #AStar(initialPuzzle, 4, puzzleNum)
 
     puzzleNum = puzzleNum + 1
