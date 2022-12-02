@@ -153,6 +153,7 @@ class puzzle:
         return temparr
 
 def uniformcostsearch(puzzleObj, puzzleNumber):
+    print(f"UCS puz#{puzzleNumber}")
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt",
               "w+") as sol:
         sol.write(str(array))
@@ -300,6 +301,7 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
 
 
 def GBFS(puzzleObj, heuristicNum, puzzleNumber):
+    print(f"GBFS puz#{puzzleNumber}")
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
         sol.write(str(array))
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
@@ -458,6 +460,7 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
 
 
 def AStar(puzzleObj, heuristicNum, puzzleNumber):
+    print(f"AStar h:{heuristicNum}; puz#{puzzleNumber}")
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
         sol.write(str(array))
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
@@ -698,11 +701,11 @@ for line in lines:
     initialPuzzle.horver = horver
     initialPuzzle.carsizes = carsizes
     print(f"Puzzle#:{puzzleNum}")
-    # uniformcostsearch(initialPuzzle, puzzleNum)
-    GBFS(initialPuzzle, 1, puzzleNum)
-    GBFS(initialPuzzle, 2, puzzleNum)
-    GBFS(initialPuzzle, 3, puzzleNum)
-    GBFS(initialPuzzle, 4, puzzleNum)
+    uniformcostsearch(initialPuzzle, puzzleNum)
+    # GBFS(initialPuzzle, 1, puzzleNum)
+    # GBFS(initialPuzzle, 2, puzzleNum)
+    # GBFS(initialPuzzle, 3, puzzleNum)
+    # GBFS(initialPuzzle, 4, puzzleNum)
     # AStar(initialPuzzle, 1, puzzleNum)
     # AStar(initialPuzzle, 2, puzzleNum)
     # AStar(initialPuzzle, 3, puzzleNum)
