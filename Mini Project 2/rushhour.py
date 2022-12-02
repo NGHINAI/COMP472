@@ -170,12 +170,15 @@ class puzzle:
 
 def uniformcostsearch(puzzleObj, puzzleNumber):
     print(f"UCS puz#{puzzleNumber}")
+    # opens text file for this puzzle's solution using UCS and immediately adds initial array
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt",
               "w+") as sol:
         sol.write(str(array))
+    # appends to text file for this puzzle using UCS the amount of gas for the puzzle
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt",
               "a") as sol:
         sol.write(f"\n\n\n{str(cargas)}")
+    # opens text file for this puzzle's search using UCS and immediately adds initial array
     with open(f".\search\\ucs-search-{puzzleNumber}.txt", "w+") as sol:
         sol.write(f"\n")
 
@@ -202,6 +205,7 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
             #If the move is not the same as the last (not a car moving to the right one time again) increase the cost.
             if not (move == currentState.previousMove):
                 newCost = currentState.cost + 1
+            #appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
             with open(f".\search\\ucs-search-{puzzleNumber}.txt", "a") as sol:
                 sol.write(f"\n{newCost}\t{newCost}\t0\t{currentArray[0][0:6]}{ currentArray[1][0:6]}{ currentArray[2][0:6]}{ currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
             #Update arrays
@@ -255,6 +259,7 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
         if len(open_list) == 0 and (len(puzzleObj.possmoves(closed_list[len(closed_list) - 1].array, closed_list[
             len(closed_list) - 1].gas)) == 0 or alreadyInClosedList):
             print("No Solution")
+            # appends to text file for this puzzle's solution that there is no solution
             with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "w") as sol:
                 sol.write("No Solution")
             break
@@ -287,8 +292,10 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
     movesList = []
     searchLength = len(closed_list)
     end = time.time()
+    # appends to text file for this puzzle's solution the total run time of the algorithm
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
+    # appends to text file for this puzzle's solution final state
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt","a") as sol:
         sol.write(f"\nFinal State: \n{tempMove.array}")
     reversedArray = []
@@ -301,8 +308,10 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
                 tempMove = closed_list[i]
                 movesList.append(closed_list[i].previousMove)
                 reversedArray.append(tempMove)
+                # appends to text file for this puzzle's solution path with the move it took to get there
                 with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
+    # appends the initial state to the solution file
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\n{tempMove.array}")
         # print(f"{tempMove.array}, {tempMove.cost}\n")
@@ -320,12 +329,16 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
             solutionPath[len(solutionPath) - 1][2] += 1
 
         previousMove = movesList[move]
+    # appends to text file for this puzzle's solution path length
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSearch path length: {searchLength} ")
+    # appends to text file for this puzzle's search path length
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSolution path length: {solnLength} ")
+    # appends to text file for this puzzle's solution path
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSolution path: {solutionPath} ")
+
     #adding to an analysis
     with open(f".\\analysis.txt", "a") as sol:
         sol.write(f"\n{puzzleNumber}\t UCS\tNA\t{solnLength}\t{searchLength} \t{end - start} ")
@@ -335,10 +348,13 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
 
 def GBFS(puzzleObj, heuristicNum, puzzleNumber):
     print(f"GBFS puz#{puzzleNumber}")
+    # opens text file for this puzzle's solution using GBFS wrt the heuristic and immediately adds initial array
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
         sol.write(str(array))
+    # appends to text file for this puzzle using GBFS wrt the heuristic the amount of gas for the puzzle
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\n\n\n{str(cargas)}")
+    # opens text file for this puzzle's search using GBFS wrt the heuristic and immediately adds initial array
     with open(f".\search\GBFS-{heuristicNum}-search-{puzzleNumber}.txt", "w+") as sol:
         sol.write(f"\n")
     start = time.time()
@@ -373,21 +389,25 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
             if not (move == currentState.previousMove):
                 if heuristicNum == 1:
                     newCost = puzzleObj.h1(tempArray)
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\GBFS-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(newCost)}\t0\t{newCost}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
                 elif heuristicNum == 2:
                     newCost = puzzleObj.h2(tempArray)
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\GBFS-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(newCost)}\t0\t{newCost}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
                 elif heuristicNum == 3:
                     newCost = puzzleObj.h3(tempArray)
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\GBFS-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(newCost)}\t0\t{newCost}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
                 elif heuristicNum == 4:
                     newCost = puzzleObj.h4(tempArray)
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\GBFS-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(newCost)}\t0\t{newCost}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
@@ -433,6 +453,7 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
         #or it's already in the closed list, print that there is no solution.
         if len(open_list)==0 and (len(puzzleObj.possmoves(closed_list[len(closed_list)-1].array, closed_list[len(closed_list)-1].gas))==0 or alreadyInClosedList):
             print("No Solution")
+            # appends to text file for this puzzle's solution that there is no solution
             with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
                 sol.write("No Solution")
             break
@@ -464,8 +485,10 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
     movesList = []
     searchLength = len(closed_list)
     end = time.time()
+    # appends to text file for this puzzle's solution the total run time of the algorithm
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol:
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
+    # appends to text file for this puzzle's solution final state
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol:
         sol.write(f"\nFinal State: \n{tempMove.array}")
 
@@ -479,6 +502,7 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
                 movesList.append(closed_list[i].previousMove)
+                # appends to text file for this puzzle's solution path with the move it took to get there
                 with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol:
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
 
@@ -494,11 +518,13 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
             solutionPath[len(solutionPath) - 1][2] += 1
 
         previousMove = movesList[move]
-
+    # appends to text file for this puzzle's solution path length
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSearch path length: {searchLength} ")
+    # appends to text file for this puzzle's search path length
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSolution path length: {solnLength} ")
+    # appends to text file for this puzzle's solution path
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSolution path: {solutionPath} ")
     #adding to analysis
@@ -509,10 +535,13 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
 
 def AStar(puzzleObj, heuristicNum, puzzleNumber):
     print(f"AStar h:{heuristicNum}; puz#{puzzleNumber}")
+    # opens text file for this puzzle's solution using AStar wrt the heuristic and immediately adds initial array
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
         sol.write(str(array))
+    # appends to text file for this puzzle using AStar wrt the heuristic the amount of gas for the puzzle
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\n\n\n{str(cargas)}")
+    # opens text file for this puzzle's search using AStar wrt the heuristic and immediately adds initial array
     with open(f".\search\AStar-{heuristicNum}-search-{puzzleNumber}.txt", "w+") as sol:
         sol.write(f"\n")
     start = time.time()
@@ -551,21 +580,25 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
             if not (move == currentState.previousMove):
                 if heuristicNum == 1:
                     newCost = puzzleObj.h1(tempArray) + newDistanceCost
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\AStar-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(puzzleObj.h1(tempArray) + currentState.distanceTravelled)}\t{currentState.distanceTravelled}\t{puzzleObj.h1(tempArray)}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
                 elif heuristicNum == 2:
                     newCost = puzzleObj.h2(tempArray) + newDistanceCost
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\AStar-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(puzzleObj.h2(tempArray) + currentState.distanceTravelled)}\t{currentState.distanceTravelled}\t{puzzleObj.h2(tempArray)}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
                 elif heuristicNum == 3:
                     newCost = puzzleObj.h3(tempArray) + newDistanceCost
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\AStar-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(puzzleObj.h3(tempArray) + currentState.distanceTravelled)}\t{currentState.distanceTravelled}\t{puzzleObj.h3(tempArray)}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
                 elif heuristicNum == 4:
                     newCost = puzzleObj.h4(tempArray) + newDistanceCost
+                    # appends to text file for this puzzle's search the f(n), g(n) and h(n) followed by the state
                     with open(f".\search\AStar-{heuristicNum}-search-{puzzleNumber}.txt", "a") as sol:
                         sol.write(
                             f"\n{(puzzleObj.h4(tempArray) + currentState.distanceTravelled)}\t{currentState.distanceTravelled}\t{puzzleObj.h4(tempArray)}\t{currentArray[0][0:6]}{currentArray[1][0:6]}{currentArray[2][0:6]}{currentArray[3][0:6]}{currentArray[4][0:6]}{currentArray[5][0:6]}")
@@ -613,6 +646,7 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
         if len(open_list) == 0 and (len(puzzleObj.possmoves(closed_list[len(closed_list) - 1].array, closed_list[
             len(closed_list) - 1].gas)) == 0 or alreadyInClosedList):
             print("No Solution")
+            # appends to text file for this puzzle's solution that there is no solution
             with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt","w+") as sol:
                 sol.write("No Solution")
             break
@@ -644,10 +678,11 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
     movesList = []
     searchLength = len(closed_list)
     end = time.time()
+    # appends to text file for this puzzle's solution the total run time of the algorithm
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nExecution Time: {end-start} seconds \t order in reversed")
 
-
+    # appends to text file for this puzzle's solution final state
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol:
         sol.write(f"\nFinal State: \n{tempMove.array}")
     # store all info in a couple lists then iterate through
@@ -659,6 +694,7 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
                 tempMove = closed_list[i]
                 movesList.append(closed_list[i].previousMove)
+                # appends to text file for this puzzle's solution path with the move it took to get there
                 with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
 
@@ -674,11 +710,13 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
             solutionPath[len(solutionPath)-1][2] += 1
 
         previousMove = movesList[move]
-
+    # appends to text file for this puzzle's solution path length
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSearch path length: {searchLength} ")
+    # appends to text file for this puzzle's search path length
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSolution path length: {solnLength} ")
+    # appends to text file for this puzzle's solution path
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\nSolution path: {solutionPath} ")
 
@@ -766,13 +804,13 @@ for line in lines:
     initialPuzzle.carsizes = carsizes
     print(f"Puzzle#:{puzzleNum}")
     uniformcostsearch(initialPuzzle, puzzleNum)
-    # GBFS(initialPuzzle, 1, puzzleNum)
-    # GBFS(initialPuzzle, 2, puzzleNum)
-    # GBFS(initialPuzzle, 3, puzzleNum)
-    # GBFS(initialPuzzle, 4, puzzleNum)
-    # AStar(initialPuzzle, 1, puzzleNum)
-    # AStar(initialPuzzle, 2, puzzleNum)
-    # AStar(initialPuzzle, 3, puzzleNum)
-    # AStar(initialPuzzle, 4, puzzleNum)
+    GBFS(initialPuzzle, 1, puzzleNum)
+    GBFS(initialPuzzle, 2, puzzleNum)
+    GBFS(initialPuzzle, 3, puzzleNum)
+    GBFS(initialPuzzle, 4, puzzleNum)
+    AStar(initialPuzzle, 1, puzzleNum)
+    AStar(initialPuzzle, 2, puzzleNum)
+    AStar(initialPuzzle, 3, puzzleNum)
+    AStar(initialPuzzle, 4, puzzleNum)
 
     puzzleNum = puzzleNum + 1
