@@ -159,7 +159,8 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt",
               "a") as sol:
         sol.write(f"\n\n\n{str(cargas)}")
-
+    with open(f".\search\\ucs-search-{puzzleNumber}.txt", "w+") as sol:
+        sol.write(f"\n")
 
     start = time.time()
 
@@ -302,6 +303,8 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
         sol.write(str(array))
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\n\n\n{str(cargas)}")
+    with open(f".\search\GBFS-{heuristicNum}-search-{puzzleNumber}.txt", "w+") as sol:
+        sol.write(f"\n")
     start = time.time()
 
     open_list = []
@@ -415,6 +418,7 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
     with open(f".\solutions\GBFS-{heuristicNum}-sol-{puzzleNumber}.txt","a") as sol:
         sol.write(f"\nFinal State: \n{tempMove.array}")
 
+
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
         print(f"{tempMove.array}, {tempMove.cost}\n")
@@ -456,6 +460,8 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
         sol.write(str(array))
     with open(f".\solutions\AStar-{heuristicNum}-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\n\n\n{str(cargas)}")
+    with open(f".\search\AStar-{heuristicNum}-search-{puzzleNumber}.txt", "w+") as sol:
+        sol.write(f"\n")
     start = time.time()
 
     open_list = []
