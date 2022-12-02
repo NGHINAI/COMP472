@@ -172,7 +172,7 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
     currentState = puzzleObj
     closed_list.append(puzzleObj)
 
-    print(currentArray)
+    # print(currentArray)
     movesLeft = False
     while (not (puzzleObj.isgamedone(currentArray)) and movesLeft == False):
         currentPossMoves = puzzleObj.possmoves(currentArray, currentGasArray)
@@ -271,7 +271,8 @@ def uniformcostsearch(puzzleObj, puzzleNumber):
                     sol.write(f"\n{ tempMove.previousMove}\t{tempMove.array[0][0:6]}{ tempMove.array[1][0:6]}{ tempMove.array[2][0:6]}{ tempMove.array[3][0:6]}{tempMove.array[4][0:6]}{ tempMove.array[5][0:6]}")
     with open(f".\solutions\\ucs-sol-{puzzleNumber}.txt", "a") as sol:
         sol.write(f"\n{tempMove.array}")
-        print(f"\n{tempMove.array}")
+        # print(f"{tempMove.array}, {tempMove.cost}\n")
+        # readbale console
 
     solnLength = 0
     movesList.remove('')
@@ -315,7 +316,7 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
     currentState = puzzleObj
     closed_list.append(puzzleObj)
 
-    print(currentArray)
+    # print(currentArray)
     movesLeft = False
     while (not (puzzleObj.isgamedone(currentArray)) and movesLeft == False):
         currentPossMoves = puzzleObj.possmoves(currentArray, currentGasArray)
@@ -421,7 +422,8 @@ def GBFS(puzzleObj, heuristicNum, puzzleNumber):
 
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
-        print(f"{tempMove.array}, {tempMove.cost}\n")
+        # print(f"{tempMove.array}, {tempMove.cost}\n")
+        #readbale console
 
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
@@ -472,7 +474,7 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
     currentState = puzzleObj
     closed_list.append(puzzleObj)
 
-    print(currentArray)
+    # print(currentArray)
     movesLeft = False
     while (not (puzzleObj.isgamedone(currentArray)) and movesLeft == False):
         currentPossMoves = puzzleObj.possmoves(currentArray, currentGasArray)
@@ -584,7 +586,8 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
         sol.write(f"\nFinal State: \n{tempMove.array}")
     # store all info in a couple lists then iterate through
     while np.shape(tempMove.previousState) == (6, 6):
-        print(f"{tempMove.array}, {tempMove.cost}\n")
+        # print(f"{tempMove.array}, {tempMove.cost}\n")
+        #removed for readable console
 
         for i in range(len(closed_list)):
             if np.array_equal(closed_list[i].array, tempMove.previousState):
@@ -623,7 +626,7 @@ def AStar(puzzleObj, heuristicNum, puzzleNumber):
 with open('inputfile.txt') as f:
     lines = f.readlines()
 
-puzzleNum = 0
+puzzleNum = 1
 
 for line in lines:
     # Initialization of variables to track data
@@ -694,15 +697,15 @@ for line in lines:
     initialPuzzle.__init__(array, cargas)
     initialPuzzle.horver = horver
     initialPuzzle.carsizes = carsizes
-
-    uniformcostsearch(initialPuzzle, puzzleNum)
+    print(f"Puzzle#:{puzzleNum}")
+    # uniformcostsearch(initialPuzzle, puzzleNum)
     GBFS(initialPuzzle, 1, puzzleNum)
     GBFS(initialPuzzle, 2, puzzleNum)
     GBFS(initialPuzzle, 3, puzzleNum)
     GBFS(initialPuzzle, 4, puzzleNum)
-    AStar(initialPuzzle, 1, puzzleNum)
-    AStar(initialPuzzle, 2, puzzleNum)
-    AStar(initialPuzzle, 3, puzzleNum)
-    AStar(initialPuzzle, 4, puzzleNum)
+    # AStar(initialPuzzle, 1, puzzleNum)
+    # AStar(initialPuzzle, 2, puzzleNum)
+    # AStar(initialPuzzle, 3, puzzleNum)
+    # AStar(initialPuzzle, 4, puzzleNum)
 
     puzzleNum = puzzleNum + 1
